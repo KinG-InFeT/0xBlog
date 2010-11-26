@@ -1,0 +1,184 @@
+				CHANGELOG
+				
+v3.0 - Beta (First OOP Release)
+	[+] Aggiunta multilingua per ora Italiano e Inglese
+	[+] Aggiunto sistema multi tema per ora 4 temi in totale
+	[+] Aggiunto sistema multi amministrazione
+		[+]Aggiunto sistema per eliminazione admin
+		[+] Aggiunto sistema per il cambio delle pass agli amministratori
+	[+] Aggiunto sistema per il controllo aggiornamenti
+	[+] Aggiunto sistema per le impostazioni dove possibile cambiarle a piacere
+		[+] Possibilità di poter cambiare il titolo del blog
+		[+] Possibilità di poter cambiare la descrizione del blog
+		[+] Possibilità di poter cambiare la lingua del sistema
+		[+] Possibilità di poter cambiare il footer del blog
+	[+] Layout completamente rinnovato e riscritto
+	[+] BBcode migliorati
+	[+] Captcha notevolmente migliorato
+	[+] Login basato sui COOKIE
+	[+] Sicurezza notevolmente migliorata
+	[+] Aggiunta scaletta in home per i topic più letti
+	[+] Aggiunto sistema di reset del CMS
+	
+#------------------------------------------------------------------------------------------------------------#
+				
+v2.5 - Final Procedural Version
+	[+] Riscritta la funzione per il controllo degli attacchi di tipo CSRF/XSRF
+	[+] Accorginenti nel file install.php (eliminata variabile in config.php $base_url)
+	[+] Revisione totale del codice per la versione finale (OK)
+				
+v2.4
+	[+] Alcune migliorie ai file core.php, viewpost.php
+	[+] Integrato il titolo che cambia a seconda della pagina (Anche nella visualizzazione dei Post :P)
+	[+] FIX multiple XSS in admin/index.php e admin/edit.php
+	[+] Completamente cambiata l'amministrazione, adesso molto più versatile, semplice e veloce ;)
+	[+] FIX multiple XSS in index.php e viewpost.php
+	[+] FIX if() in edit.php function->new_post
+	[+] CHANGE Mod links for pages in footer :D
+	[=] Revisionato l'intero codice per il controllo identazione
+				
+v2.3.1
+	[+] Migliorata e sintetizzata l'installazione
+		[+] Eliminato il file delete_install.php (funzione integrata in install.php)
+		[+] Aggiunti controlli vari nella installazione
+	[+] Piccolo accorgimento nella regexp in funzione di csrf_attemp()
+	[+] Migliorato il Login ed implementate le sessioni "private" :D (Thanks hacku e meh)
+				
+v2.3
+	[+] Piccola sistemata all'installazione ed eliminati i fastidiosi \' nel titolo e nella descrizione
+	[+] Sistemato il footer :P
+	[+] Rinnovato interamente il BBcode
+	[+] Ripulito l'intero codice sorgente
+	[+] Fixed Multiple CSRF (Thanks gabry9191(Find Bug) and xEdox(Regex Helper xD))
+	[+] Sistemate le funzioni clear_br
+	[+] Una revisione TOTALE dell'intero codice con modifiche e cambiamenti alla struttura
+	[+] Sistemato il sistema per il cambio dei temi :D
+	[+] Sistemato un errorino nell'amministrazione :P
+				
+v2.2.1 (Revision Release and BugFix)
+	[+] Ripulito un pò il codice
+	[+] Revisionata e migliorata l'installazione
+	[+] Inserito padding in CSS ;)
+	[+] Fixato il problema dei post in index.php(piccola dimenticanza dell'azzeramento della var $temp)
+	[+] Fixato problema in viewpost.php #Bug http://0xproject.hellospace.net/forum/viewtopic.php?t=2 (Thanks gabry9191)
+	[+] Aggiunta possibilità di installazioni multiple grazie al prefix delle tabelle ;)
+	[+] Integrazione del logout in index.php (Idea By gabry9191)
+		[+] Eliminata la pagina logout.php 
+	[+] Rinominate le tabelle delle sql in PREFIX_articles e PREFIX_comments
+	[+] Fixed piccolo errore in viewpost.php (non commentava siccome non passava l'ID :P)
+
+v2.1 (Add Functions and Revision)
+	[+] Possibilità di vedere ogni singolo post con relativi commenti in separata pagina viewpost.php
+	[+] Revisionata l'installazione
+	[+] Sistemata la codifica utf-8
+	[+] Sistemato il titolo del blog
+	[+] Aggiunto BBcode per i Link nei nuovi post
+	[+] Aumentati il numero di caratteri per i commenti ora 500
+	[+] Inserita opzione "continua a leggere" (figo è? xd thanks DoMinO)
+	[+] Ora è possibile commentare solo visualizzando il post per intero
+	[+] Fixed problemino nella stampa (non stampava anche i <br /> ma solo i \n quindi non andava a capo il testo :P)
+	[+] Eliminati alcune messaggi alert fastidiosi xd
+	[+] Sistemate alcune SQL :P
+	[+] Aggiornato link footer
+	[+] Aggiunte info al readme
+	[+] Sistemato il codice del core
+	[+] Revisionata la pagina per il login
+	[+] Moddati tutti i cicli per la visualizzazione dei post e dei commenti, ora utilizzano il while cazzuto XD
+	[+] Fixed delete_post and delete comments (non prendeva l'ID
+	[+] Completamente revisionata la pagina edit.php
+	
+v2.0 (Fix small Bugs and Add function :D)
+	[+] Aggiunta funzione stripslashes() per il problema degli slash (\')
+	[+] Possibilità di cambiare il tema del Blog tramite amministrazione ;) (Idea rubata a xEdox :P )
+	[+] Inserite quasi le totalità delle funzioni nel core.php così da avere un bel Blog procedrale :P
+	[+] Aggiunta fnzione clear così da migliorare molto il codice
+	[+] Migliorato il codice per l'inserimento dei Commenti
+	[-] Eliminate le pagine header.php footer.php e bbcode.php ora incluse nel core.php ;)
+	[+] Eliminate le immagini come add, comment ecc... very very small themes :P
+	[+] Aggiunta funzione bbcode_reverse che prima dava i link alle immagini in html ad es con questa li fa tornare all'originale BBcode ;)
+	
+v1.9 (Stable Release)
+	[+] Alcuni cambiamenti nel delete_install.php
+	[+] Sistemato il file README
+	[+] Creato il file CHANGELOG contenenti le informazioni dei cambiamenti o modifiche apportate alle varie versioni
+	[+] Apportate radicali modifiche al file di installazione (install.php)
+	[+] Piccola modifica al file index.php dell'amministrazione
+	[+] Fixed piccolezza in logout.php
+	[+] Aggiunta la versione del CMS nel footer
+	[+] Migliorata notevoltente la grafica
+	[+] Aggiustate un pò le pagine in amministrazione
+	[+] Qualche ritocco alla index del blog
+	[+] Fixato bug abbastanza fastidioso, in pratica la funzione nl2br inseriva i <br /> ma all'editing non li levata, quindi aggiunta piccola funzione clear_br() che li elimina ;)
+	[+] Aggiunta descrizione del blog inseribile durante l'installazione
+	[+] Aggiustata un pò la pagina di login epr l'amministrazione
+	
+v1.8(Fix)
+	[+] Fixata una falla di tipo SQL Injection nella parte di codice relativa all'impaginazione (Thanks hacku and FL3` )
+	[+] Pulito un pò il codice
+	[+] Riscritto tutto il login per l'amministrazione ora basato sulle sessioni (causa vulnerabilità con la manipolazione dei cookie[Credo])
+	[+] Criptazione password in hash MD5
+	[+] Inserimento Logout
+	[+] Sistemato il file di installazione (install.php)
+
+v1.7 (Excellent release)
+N0t3: Codice notevolmente migliorato e sistemato nel proprio formato
+
+	[+] Aggiunta l'IMPAGINAZIONE (Un grande aiuto da parte di r0b0t82 dopo 3 ore di sbattimenti sulla classe relativa)
+	[+] Riscritto quasi completamente il file di installazione (install.php) e fixati innumerevoli bug
+		[+] Fixato il problema alla cancellazione del file stesso (creato nuovo file delete_install.php che fa il suo dovere xd)
+		[+] Fixato un problema all'if principale ed al secondo (ho fatto un macello pensandoci asd)
+		[+] Fixed XSS, variabile non controllata in install.php, che andava ad esporsi a tutto il CMS (importanza: Low)
+	[+] Inserito controllo se il CMS è già installato oppure no
+	[+] Fixed SQL Injection in index.php (Importanza: Low)
+	[+] Fixed controllo sull'inserimento dei commenti, usciva l'avvertimento ma non fermava lo script
+	[+] Inserito Captcha :D (grazie a Sys-xash per l'idea asd)
+	[+] Fixed filtro bbcode per la visualizzazione delle immagini (scrivero scr invece che src ASD)
+	[+] Fixed funzione editing nell' amministrazione  dove mi ero dimenticato di riportare anche l'autore nella form (:P)
+	[+] RISCRITTA TUTTA L'AMMINISTRAZIONE, E DIVISA IN 2 FILE (idea di FL3`, Thanks ) ora il codice è molto più elegante ;)
+	[+] Sistemata un pò La grafica (non vi allarmate solo un paio di linee asd)
+	[+] Aggiunta opzione per l'eliminazione di tutti gli articoli e i commenti
+	[-]   Eliminato codice superfluo nell'amministrazione ed in home-page
+	[+] Aggiunta segnalazione in amministrazione e in Home-Page se non ci sono ancora Articoli Inseriti
+	[+] Aggiunte statistiche: quantità numerica di articoli ed commenti inseriti, in fondo a tutte le pagine
+	[+] Fixed visualizzazione smyle in zona amministrativa (non avevo messo la cartella anche nelladir admin XD)
+	[+] Sistemata per bene il Login nell'area amministrativa (adesso è molto più cazzuto ^_^)
+	[+] Aggiunto titolo pagine (ovviamente decidete voi quale isnerire durante l'installazione ^_^)
+	[+] Sistemate le zone header e footer, entrambe adesso divise in 2 pagine ed incluse nelle pagine principali(mi facilitò il lavoro ;) )
+	[+] Ritoccato il file delete_install.php(qualche erroruccio :P)
+
+v1.6 (big add+Fixed)
+	[+] Fixata la falla di tipo SQL Injection nella index.php (thanks staker)
+	[+] Aggiunta possibilità di visualizzare i commenti solo se lo si vuole ;)
+	[+] Aggiunto controllo dei caratteri inseriti nei commenti (max 300)
+	[+] Revisione totale del file install.php ed aggiunta della possibilità di poter eliminare il file install tramite un semplice click
+	[+] Aggiunti alcuni BBcode per le animoction/smyle (forse ne aggiungerò altri forse no bho xd)
+
+v1.5.1 (Bug fix+small add) [non publicata]
+	[+] Fixata XSS nella index.php (thanks staker)
+	[+] Picola revisione del file install.php
+
+v1.5 (Add+Fixing+Modding)
+	[+] Sistemata un pò la grafica e i posizionamenti dei DIV all'interno della pagina
+	[-] Eliminato il login in area amministraviva tramite htaccess
+		[+] Inserito Login Completo con form
+			[+] Aggiunta la possibilità di scegliere Username  e Password amministrativa durante l'installazione.
+	[+] Inserito controllo nell'inserimento dei commenti (controllo se i campi sono riempiti oppure no)
+	[+] Revisionato il file install.php e modificato in gran parte ed aggiunta la scrittura del user_admine pass_admin per l'amministrazione
+		[+] Seconda revisione del file install.php grazie al quale ho risolto il problema degli apici dell'array contenente i dati di amministrazione
+	[+] Revisione file ceck.php per impostazioni header sbagliare
+
+v1.2 (Fixed)
+	[+]Fixed XSS (Cookie Grabber) modulo index.php  nell'inserimento delle SQL
+	[+]Fixed XSS (Cookie Grabber) modulo admin/index.php nell'inserimento SQL
+
+v1.0 (Stable)
+	[+]Area amministrativa
+	[+]Protezione area amministrativa tramite htaccess e htpasswd
+	[+]Possibilità di aggiungere commenti
+		[+]Possibilità di rimuovere i commenti(Solo admin)
+	[+]Possibilità di aggiungere post
+		[+]Possiblità di editare i post (Solo admin)
+
+v0.3b (unstable)
+	[+]Possibilità di inserire post
+	[+]Possibilità di eliminarli

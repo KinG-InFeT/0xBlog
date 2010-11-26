@@ -1,0 +1,23 @@
+ITA
+
+Per avanzare dalla versione 2.5 - Finale alla versione 3.0 - Beta seguire questi semplici passaggi:
+
+1) Cancellare tutti i file all'interno della vostra root riguardanti 0xBlog tranne il file config.php
+2) Uplodare tutti i nuovi file della versione 3.0 - Beta tranne: config.php e install.php
+3) Uplodare il file upgrade.php nella root del vostro 0xBlog (dove è situato il file config.php)
+4) Aprire il file upgrade.php ed eseguire le indicazioni(inserire solo la vostra email)
+5) Una volta finito cancellare il file upgrade.php
+6) Fine :D
+
+
+
+ENG
+
+To move forward from version 2.5 - Final version 3.0 - Beta follow these simple steps:
+
+1) Delete all files in your root on 0xBlog except the config.php file
+2) upload all new files for version 3.0 - Beta except: config.php and install.php
+3) upload the file upgrade.php in your root 0xBlog (where config.php is located)
+4) Open the file upgrade.php and follow the signs (just insert your email)
+5) When done delete the file upgrade.php
+6) Finish: D

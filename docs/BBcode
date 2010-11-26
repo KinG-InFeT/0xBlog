@@ -1,0 +1,16 @@
+BBcode:
+
+[img]<image_path>[/img]
+[url=<url_path>]<url_name>[/url]
+[url]<url_path>[/url]
+[b]<text>[/b]
+[i]<text>[/i]
+[u]<text>[/u]
+
+Smile:
+
+	:)
+	;)
+	:D
+	^_^
+	:(

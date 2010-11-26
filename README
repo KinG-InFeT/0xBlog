@@ -1,0 +1,29 @@
+					0xBlog CMS
+
+Powered By KinG-InFeT ~ http://www.kinginfet.net/
+
+Link Project: http://0xproject.hellospace.net/#0xBlog
+
+#ISTRUZIONI DI INSTALLAZIONE
+
+1) UPLODARE/UPPARE TUTTI I FILE NEL VOSTRO SPAZIO WEB
+2) L'installazione partirà automaticamente con le istruzioni all'installazione
+3) Installare il CMS
+4) Fine ^_^
+
+N.B: Per visualizzare esattamente le modifiche apportate al progetto versione per versione,
+	 visionate il file CHANGELOG all'interno della cartella docs
+
+#Aggiungere un Tema
+
+Per aggiungere un tema basta semplicemente uplodare il file css creato nella directory themes
+e successivamente andarlo a selezionare dall'amministrazione
+
+#Per l'upgrade di versione
+
+Per sapere come effettuare l'upgrade del CMS visionare il file UPGRADE che si trova all'interno di docs
+
+#ATTENZIONE !!!
+Il CMS è basato su piattaforma con PHP versione > 5 
+Per altervista basta inserire tutti i file in una cartella chiamata php5 ;) o settarla dal pannello di Controllo
+e attivare il PHP5
