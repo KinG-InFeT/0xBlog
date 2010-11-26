@@ -31,8 +31,17 @@ if(!(phpversion() >= '5.2.0')) {
 		 
 include("config.php");
 
+if( isSet($_GET['delete_install']) && $_GET['delete_install'] == 1 ){
+	if( unlink("./install.php") == FALSE ){
+		chmod("./install.php", 0777);
+		die(header('Location: install.php?delete_install=1'));
+	}else{
+		header("location: index.php");
+	}
+}
+
 if(defined("__INSTALLED__"))
-	die("0xBlog already installed!");
+	die("0xBlog already installed! <br /> Go to <a href=\"index.php\">Home Blog</a>");
 
 function VarProtect ($content) {
 	if (is_array ($content)) {
@@ -43,15 +52,6 @@ function VarProtect ($content) {
 	}
 	
 	return (get_magic_quotes_gpc () ? stripslashes ($content) : $content);
-}
-
-if( isSet($_GET['delete_install']) && $_GET['delete_install'] == 1 ){
-	if( unlink("./install.php") == FALSE ){
-		chmod("./install.php", 0777);
-		die(header('Location: install.php?delete_install=1'));
-	}else{
-		header("location: index.php");
-	}
 }
 ?>
 

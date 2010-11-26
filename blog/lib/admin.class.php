@@ -334,12 +334,12 @@ class Admin extends Security  {
 			if($lol->check_exist_language($this->lang) == FALSE)
 				die('<script>alert("'.$lang['lang_not_exist'].'"); window.location="admin.php?action=settings";</script>');
 			
-			$this->sql->sendQuery("UPDATE ".__PREFIX__."config SET 
-									title = '".$this->title."', 
-									description = '".$this->desc."', 
-									lang = '".$this->lang."',
-									limit = '".$this->limit."',
-									footer = '".$this->footer."'");
+			$this->sql->sendQuery("UPDATE `".__PREFIX__."config` SET 
+									`title` = '".$this->title."', 
+									`description` = '".$this->desc."', 
+									`lang` = '".$this->lang."',
+									`limit` = '".$this->limit."',
+									`footer` = '".$this->footer."' LIMIT 1 ;");
 			
 			print "<script>alert(\"".$lang['setting_success'].".\"); window.location=\"admin.php\";</script>";
 		

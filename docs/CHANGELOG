@@ -1,4 +1,10 @@
 				CHANGELOG
+
+v3.0.2
+	[+] Minor bug fix in install.php
+	[+] Fix SQL Update settings in admin.class.php (Thanks SyStEm-InFeT)
+	[+] Fix minor bugs in add comment
+	[+] Fix bug n° #4 header error in add comment (Thanks gabry9191)				
 				
 v3.0.1
 	[+] Fix errori nell'installazione (la miseria non avevo aggiornato il file dopo le ultime modifiche loool)

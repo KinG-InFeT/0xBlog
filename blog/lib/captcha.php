@@ -15,7 +15,7 @@ session_start();
 $charmap = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
 $display = $charmap{rand(0,59)};
 
-for($i=1; $i<6; $i++)
+for($i = 1; $i < 6; $i++)
 	$display .= $charmap{rand(0,59)};
 
 $_SESSION['captcha'] = $display;

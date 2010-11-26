@@ -40,7 +40,7 @@ if((@$_GET['send'] == 1) && (!empty($_POST['mail']))) {
 	) TYPE=MyISAM AUTO_INCREMENT=1 ;") or die(mysql_error());
 	
 	//popolazione tabella config
-	mysql_query("INSERT INTO `".PREFIX."config` (`title`, `description`, `themes`, `lang`, `limit`, `footer`) VALUES ('Upgraded Version to 3.0 - Beta Version', 'Go Admin Panel -> Settings', 'default.css', 'eng.php', '".$limit."', 'FOOTER DA CAMBIARE');") or die(mysql_error());
+	mysql_query("INSERT INTO `".PREFIX."config` (`title`, `description`, `themes`, `lang`, `limit`, `footer`) VALUES ('Upgraded Version to 3.0.x Version', 'Go Admin Panel -> Settings', 'default.css', 'eng.php', '".$limit."', 'FOOTER DA CAMBIARE');") or die(mysql_error());
 
 	//tabella users	
 	mysql_query("CREATE TABLE `".PREFIX."users` (
@@ -85,7 +85,7 @@ $db_name = "'.$db_name.'";
 		fwrite ($open, $config);//Scrivo sul file config.php
 		
 		fclose ($open); // chiudo il file
-		print "<script>alert(\"Upgrade with success\");</script>";
+		print "<script>alert(\"Upgrade System with success\");</script>";
 		header('Location: index.php');
 }
 	

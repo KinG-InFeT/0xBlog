@@ -10,6 +10,8 @@
  * @link http://0xproject.hellospace.net#0xBlog
  *
  */
+ob_start();
+
 include ("config.php");
 		
 if(!defined("__INSTALLED__"))
@@ -25,7 +27,7 @@ include("lib/security.class.php");
 
 class Core extends Security {
 	
-	const VERSION = '3.0.1';
+	const VERSION = '3.0.2';
 
 	public function __construct () {
 	
@@ -234,7 +236,7 @@ class Core extends Security {
 		//stampo il singolo post
 		print "\n<p align=\"left\"><b>".$this->post['title']."</b></p>";
 		print "\n<br />\n<p>\n".$BBcode->BBcode($this->post['post'])."</p>";
-		print "\n<br /><br /><p align=\"right\"><b>".$lang['view'].":</b> ".$this->post['num_read']." ~ <b>".$lang['date'].":</b> ".$this->post['post_date']." ~ <b>".$lang['name_author'].":</b> <em><u><a href=\"mailto:".$this->mail[0]."\">".$this->post['author']."</a></u></em></p>\n<br /><br />";
+		print "\n<br /><br /><p align=\"right\"><b>".$lang['view'].":</b> ".$this->post['num_read']." ~ <b>".$lang['date'].":</b> ".$this->post['post_date']." ~" 				. "<b>".$lang['name_author'].":</b> <em><u><a href=\"mailto:".$this->mail[0]."\">".$this->post['author']."</a></u></em></p>\n<br /><br />";
 		print "\n>:<a href=\"viewpost.php?id=".$this->post['id']."&action=comment\">[".$lang['commit']."]</a><br /><br /><hr />";
 		
 		//form per aggiungere un commento
@@ -253,7 +255,7 @@ class Core extends Security {
 				$captcha          = $_POST['captcha'];
 
 				if($captcha != $key_generate)
-					die( "<script>alert(\"".$lang['no_match_captcha']."\");</script>");
+					die( "<script>alert(\"".$lang['no_match_captcha']."\"); window.location=\"viewpost.php?id=".$this->id."&action=comment\";</script>");
 					
 				if(empty($_POST['name']) || empty($_POST['comment'])) //Controllo se i campi sono riempiti oppure no
 					die( "<script>alert(\"".$lang['fill_camp']."\");</script>");
