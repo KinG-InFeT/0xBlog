@@ -16,8 +16,8 @@ include_once("language.class.php");
 $lang = new Language();
 
 include("languages/".$lang->load_language());
- 
-class Login {
+
+class Login extends Security {
 
 	public function __construct () {
 	
@@ -66,7 +66,11 @@ class Login {
 			if ($this->username == $this->user['username'] && $this->password == $this->user['password']) {			
 			
 				setcookie ("username", $this->username, time () + (3600 * 24), "/");
-				setcookie ("password", $this->password, time () + (3600 * 24), "/");	
+				setcookie ("password", $this->password, time () + (3600 * 24), "/");
+				
+				$this->token = $this->generate_token();
+				
+				$_SESSION['token'] = $this->token;	
 	
 				return TRUE;
 			}else{

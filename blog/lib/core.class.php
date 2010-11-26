@@ -20,10 +20,12 @@ include_once("language.class.php");
 $lang = new Language();
 
 include("languages/".$lang->load_language());
- 
-class Core {
+
+include("lib/security.class.php");
+
+class Core extends Security {
 	
-	const VERSION = '3.0 - Beta';
+	const VERSION = '3.0.1';
 
 	public function __construct () {
 	
@@ -34,14 +36,18 @@ class Core {
 	}
 	
 	public function VarProtect ($content) {
-		if (is_array ($content)) {
-			foreach ($content as $key => $val)
-				$content[$key] = mysql_real_escape_string (htmlentities (stripslashes ($content[$key])));
+	
+		$this->content = stripslashes ($content);
+		
+		if (is_array ($this->content)) {
+			foreach ($this->content as $key => $val)
+				$this->content[$key] = mysql_real_escape_string (htmlspecialchars ($this->content[$key]));
 		}else{
-			$content = mysql_real_escape_string (htmlentities ($content));
+			$this->content = mysql_real_escape_string (htmlspecialchars ($this->content));
 		}
 	
-		return (get_magic_quotes_gpc () ? stripslashes ($content) : $content);
+		//return (get_magic_quotes_gpc () ? stripslashes ($this->content) : $this->content);
+		return $this->content;
 	}
 	
 	public function show_header($title) {
@@ -189,6 +195,8 @@ class Core {
 		
 		$this->id = intval($id);
 		
+		$this->my_is_numeric($this->id);
+		
 		$this->get_title = mysql_fetch_array($this->sql->sendQuery("SELECT title FROM ".__PREFIX__."articles WHERE id = '".$this->id."'"));
 		
 		return ($this->get_title['title'] ? $this->get_title['title'] : '404 - Not Found');
@@ -198,12 +206,14 @@ class Core {
 	global $lang;
 	
 		print "\n<div id=\"wrapper\">"
-		    . "\n<div id=\"content\">\n";
-		    
+		    . "\n<div id=\"content\">\n";   
+		
 		$this->id = intval($id);
 		
 		if(empty($this->id))
 			die("<div id=\"error\"><h2>".$lang['id_not_exist']."</h2></div>");
+		
+		$this->my_is_numeric($id); 
 		
 		if(mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE id = '".$this->id."'")) != 1)
 			die("<div id=\"error\"><h2>".$lang['article_not_exist']."</h2></div>");

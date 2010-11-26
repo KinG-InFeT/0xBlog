@@ -181,7 +181,7 @@ if (   !empty( $_POST['username'] )
 	
 	echo "Table <b>'".$prefix."config'</b> created with success<br />\n";
 	
-	mysql_query("INSERT INTO ".$prefix."config (title, description, themes, lang) VALUES ('".$title."', '".$desc."', 'default.css', '".$lang."', '".$limit."', '".$footer."');") or die(mysql_error());
+	mysql_query("INSERT INTO ".$prefix."config (`title`, `description`, `themes`, `lang`, `limit`, `footer`) VALUES ('".$title."', '".$desc."', 'default.css', '".$lang."', '".$limit."', '".$footer."');") or die(mysql_error());
 		
 	echo "<b>Configuration</b> added with success<br />\n";
 			
@@ -222,6 +222,7 @@ if (   !empty( $_POST['username'] )
  * @link http://0xproject.hellospace.net#0xBlog
  *
  */
+@define("__INSTALLED__", 1);
 
 @define("__PREFIX__","'.$prefix.'");
 
@@ -290,8 +291,8 @@ $db_name = "'.$name.'";
 		<td><font color="white">Language:</font></td>
 		<td>
 		<select name='lang'>
-			<option value = 'eng' >English
-			<option value = 'ita' >Italiano
+			<option value = 'eng.php' >English
+			<option value = 'ita.php' >Italiano
 		</select>
 		</td>
 		<td bgcolor="black"><a onclick="window.alert('You like talking about?')"><img alt="img/info.png" border="0" src="img/info.png"></a></td>

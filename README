@@ -4,6 +4,8 @@ Powered By KinG-InFeT ~ http://www.kinginfet.net/
 
 Link Project: http://0xproject.hellospace.net/#0xBlog
 
+Bug-Tracker: http://0xproject.hellospace.net/bug_tracker/
+
 #ISTRUZIONI DI INSTALLAZIONE
 
 1) UPLODARE/UPPARE TUTTI I FILE NEL VOSTRO SPAZIO WEB
@@ -21,7 +23,8 @@ e successivamente andarlo a selezionare dall'amministrazione
 
 #Per l'upgrade di versione
 
-Per sapere come effettuare l'upgrade del CMS visionare il file UPGRADE che si trova all'interno di docs
+Per sapere come effettuare l'upgrade del CMS visionare la cartella UPGRADE FILES che si trova all'interno di docs,
+all'interno troverete tutti i documenti riguardanti l'aggiornamento per ogni versione dalla 2.5 in sù.
 
 #ATTENZIONE !!!
 Il CMS è basato su piattaforma con PHP versione > 5 

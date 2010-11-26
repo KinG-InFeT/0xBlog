@@ -10,6 +10,8 @@
  * @link http://0xproject.hellospace.net#0xBlog
  *
  */
+ob_start();
+session_start();
  
 include("config.php");
 include("lib/mysql.class.php");
@@ -17,12 +19,9 @@ include("lib/core.class.php");
 include("lib/admin.class.php");
 include("lib/login.class.php");
 
-$mysql    = new MySQL ($db_host, $db_user, $db_pass, $db_name);
 $template = new Core();
 $admin    = new Admin();
 $login    = new Login();
-
-$admin->csrf_attemp(@$_SERVER['HTTP_REFERER']);
 
 @$action = $_GET['action'];
 

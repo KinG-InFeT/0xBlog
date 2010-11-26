@@ -18,11 +18,11 @@ class MySQL {
 	public function __construct ($db_host, $db_user, $db_pass, $db_name) {
 	
 		if (!$this -> conn = @mysql_connect ($db_host, $db_user, $db_pass)) {
-			die ("Errore nella connessione al database!<br />".mysql_error());
+			die (mysql_error());
 		}
 		
 		if (!@mysql_select_db ($db_name, $this -> conn)) {
-			die ("Errore nella selezione del Database: ".$db_name."!<br />".mysql_error());
+			die (mysql_error());
 		}
 	}
 	

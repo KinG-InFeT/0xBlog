@@ -16,8 +16,8 @@ include_once("language.class.php");
 $lang = new Language();
 
 include("languages/".$lang->load_language());
- 
-class Admin {
+
+class Admin extends Security  {
 
 	public function __construct () {
 	
@@ -27,32 +27,19 @@ class Admin {
 			$this->sql = new MySQL ($db_host, $db_user, $db_pass, $db_name);
 	}
 	
-	public function csrf_attemp($ref) {
-		$post = join($_POST);
-		if($post != "" && $ref != "") {
-			if(preg_match("/www\./i",$_SERVER['HTTP_HOST'])) {
-				$exp  = explode("www.",$_SERVER['HTTP_HOST']);
-				$host = $exp[1];
-			}else{
-				$host = $_SERVER['HTTP_HOST'];
-			}
-			if(!preg_match('/(http|https):\/\/(www\.)?'.$host.'/i',$ref) 
-			&& !preg_match('/(http|https):\/\/'.$_SERVER['SERVER_ADDR'].'/i',$ref)) 
-			{
-				die("CSRF/XSRF Hacking Attemp!");
-			}
-		}
-	}
-	
 	public function VarProtect ($content) {
-		if (is_array ($content)) {
-			foreach ($content as $key => $val)
-				$content[$key] = mysql_real_escape_string (htmlentities (stripslashes ($content[$key])));
+	
+		$this->content = stripslashes ($content);
+		
+		if (is_array ($this->content)) {
+			foreach ($this->content as $key => $val)
+				$this->content[$key] = mysql_real_escape_string (htmlspecialchars ($this->content[$key]));
 		}else{
-			$content = mysql_real_escape_string (htmlentities ($content));
+			$this->content = mysql_real_escape_string (htmlspecialchars ($this->content));
 		}
 	
-		return (get_magic_quotes_gpc () ? stripslashes ($content) : $content);
+		//return (get_magic_quotes_gpc () ? stripslashes ($this->content) : $this->content);
+		return $this->content;
 	}
 
 	public function valid_mail($mail) {
@@ -119,6 +106,7 @@ class Admin {
 	 * [img]<image_path>[/img]
 	 * [url=<url_path>]<url_name>[/url]
 	 * [url]<url_path>[/url]
+	 * [img]<link image>[/img]
 	 * [b]<text>[/b]
 	 * [i]<text>[/i]
 	 * [u]<text>[/u]
@@ -126,8 +114,18 @@ class Admin {
 	
 	public function BBcode($text) {
 	
-		$text = nl2br($text);
-		//$text = str_replace("\n","<br />",$text);
+		//$text = nl2br($text);
+		$text = str_replace("\n","<br />",$text);
+		
+		
+		//escape
+		$text = str_replace("&egrave;","è",$text);
+		$text = str_replace("&agrave;","à",$text);
+		$text = str_replace("&quot;","\"",$text);
+		$text = str_replace("&ugrave;","ù",$text);
+		$text = str_replace("&Igrave;","ì",$text);
+		$text = str_replace("&nbsp;"," ",$text);
+		$text = str_replace("&euro;","€",$text);				
 	
 		/* Smile */
 		$text = str_replace(":)", "<img alt=\":)\" src=\"img/01.jpg\">", $text);
@@ -160,38 +158,42 @@ class Admin {
 		print "<h2 align=\"center\">".$lang['title_new_article']."</h2><br />\n";
 	
 		if (!empty($_POST['author']) && !empty($_POST['title']) && !empty($_POST['article'])) {
-
-		        $this->date    = @date('d/m/y');
-		        $this->article = $this->VarProtect( $_POST['article']);
-		        $this->title   = $this->VarProtect( $_POST['title']  );
-		        $this->author  = $this->VarProtect( $_POST['author'] );
+			
+			$this->security_token($_POST['security'], $_SESSION['token']);
+			
+		    $this->date    = @date('d/m/y');
+		    $this->article = $this->VarProtect( $_POST['article']);
+		    $this->title   = $this->VarProtect( $_POST['title']  );
+		    $this->author  = $this->VarProtect( $_POST['author'] );
 		
-		        $this->sql->sendQuery("INSERT INTO ".__PREFIX__."articles (post, title, author,post_date
+		    $this->sql->sendQuery("INSERT INTO ".__PREFIX__."articles (post, title, author,post_date
 		        						) VALUES (
 		        					'".$this->article."', '".$this->title."', '".$this->author."',  '".$this->date."')");
 		
-		        print "<script>alert(\"".$lang['add_article_success']."\");</script>";
-		        print '<script>window.location="admin.php";</script>';
-		    }else{
+		    print "<script>alert(\"".$lang['add_article_success']."\");</script>";
+		    print '<script>window.location="admin.php";</script>';
+		}else{
 		    	//Visualizzo la form
-				print '<form action="admin.php?action=add_post" method="POST">
-					    '.$lang['author'].':<br />
-    	        	    <input type="text" name="author" value="'.htmlspecialchars($_COOKIE['username']).'"/><br /><br />
-    	        	    '.$lang['title'].':<br />
-    	        	    <input type="text" name="title" /><br /><br />
-    	        	    Smile: :) , :( , :D , ;) , ^_^ .<br /><br />
-    	        	    BBcode:<br />
-    			            * [img] image_path [/img]<br />
-							* [url= url_path ] url_name [/url]<br />
-							* [url] url_path [/url]<br />
-							* [b] text [/b]<br />
-							* [i] text [/i]<br />
-							* [u] text [/u]<br />
-						<br />
-    	        	    '.$lang['article'].':<br />
-    	        	    <textarea name="article" cols="100" rows="25"></textarea><br /><br />
-    	        	    <input type="submit" value="'.$lang['send_new_article'].'" />
-    	        	    <br /><br />';
+			print '<form action="admin.php?action=add_post" method="POST">
+			    '.$lang['author'].':<br />
+    	      	    <input type="text" name="author" value="'.htmlspecialchars($_COOKIE['username']).'"/><br /><br />
+    	      	    '.$lang['title'].':<br />
+    	      	    <input type="text" name="title" /><br /><br />
+    	      	    Smile: :) , :( , :D , ;) , ^_^ .<br /><br />
+    	      	    BBcode:<br />
+    		        * [img] image_path [/img]<br />
+					* [url= url_path ] url_name [/url]<br />
+					* [url] url_path [/url]<br />
+					* [img] url_img [/img]<br />
+					* [b] text [/b]<br />
+					* [i] text [/i]<br />
+					* [u] text [/u]<br />
+				<br />
+    	      	    '.$lang['article'].':<br />
+    	      	    <textarea name="article" cols="100" rows="25"></textarea><br /><br />
+    	      	    <input type="submit" value="'.$lang['send_new_article'].'" />
+    	      	    <input type="hidden" name="security" value="'.$_SESSION['token'].'" />
+    	      	    <br /><br /></form>';
 		}
 	}
 	
@@ -219,16 +221,17 @@ class Admin {
 				</tr>';	
 				
 			while($this->comment = mysql_fetch_array($this->comments)) {
-				echo "\n<form action='admin.php?action=del_comment' method='POST'>";	
+				print "\n<form action='admin.php?action=del_comment' method='POST'>";	
 				print "\n<tr>"
 					  . "\n<td>".htmlspecialchars($this->comment['name'])."</td>"
 					  . "\n<td>".htmlspecialchars($this->comment['comment'])."</td>"
 					  . "\n<td><input type='submit' value='".$lang['delete']."'/></td>"
-					. "</tr>\n";
-				echo "<input type='hidden' name='id' value='".(int) $this->comment['id']."'>\n";
-				echo "</form>\n";
+					. "\n</tr>";
+				print "\n<input type='hidden' name='id' value='".(int) $this->comment['id']."'>";
+				print "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />";
+				print "\n</form>";
 			}
-			echo "</tbody>\n</table>\n";
+			echo "\n</tbody>\n</table>\n";
 		}
 	}
 	
@@ -239,6 +242,8 @@ class Admin {
 		
 		if(empty($this->id))
 			die("<div id=\"error\"><h2 align=\"center\">".$lang['id_not_exist']."</p></div>");
+			
+		$this->security_token($_POST['security'], $_SESSION['token']);
 		
 		$this->sql->sendQuery("DELETE FROM ".__PREFIX__."comments WHERE id = '".$this->id."'");
 		
@@ -256,8 +261,11 @@ class Admin {
 			print "\n<br /><br /><form method=\"POST\" action=\"admin.php?action=del_post\" />\n"
 				. $lang['inserit_article_id'].": <input type=\"text\" name=\"id\" />\n"
 				. "<br /><input type=\"submit\" value=\"".$lang['delete_art']."\" />\n"
+				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
 				. "</form>";
 		}else{
+			$this->security_token($_POST['security'], $_SESSION['token']);
+			
 			$this->sql->sendQuery("DELETE FROM ".__PREFIX__."articles WHERE id = '".$this->id."'");
 			$this->sql->sendQuery("DELETE FROM ".__PREFIX__."comments WHERE blog_id = '".$this->id."'");
 
@@ -281,6 +289,7 @@ class Admin {
 			. "\n\t<option value=\"si\">".$lang['si']."</option>"
 			. "\n</select>"
         	. "\n<input type=\"submit\" name=\"invia\" value=\"".$lang['send']."\" />"
+        	. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
         	. "\n</form>";
         		
        	$scelta = @$_POST['scelta'];
@@ -288,6 +297,8 @@ class Admin {
        	if(isset($scelta))  {
        		if($scelta == 'si') {
        		
+       			$this->security_token($_POST['security'], $_SESSION['token']);
+       			
        			$this->sql->sendQuery("TRUNCATE TABLE ".__PREFIX__."articles");
        			$this->sql->sendQuery("TRUNCATE TABLE ".__PREFIX__."comments");
        			$this->sql->sendQuery("UPDATE ".__PREFIX__."config SET themes = 'default.css'");
@@ -311,6 +322,8 @@ class Admin {
 		$lol = new Language();
 	
 		if(!empty($_POST['title']) && !empty($_POST['desc']) && !empty($_POST['lang']) && !empty($_POST['limit']) && !empty($_POST['footer'])) {
+			
+			$this->security_token($_POST['security'], $_SESSION['token']);
 			
 			$this->title  = $this->VarProtect( $_POST['title']  );
 			$this->desc   = $this->VarProtect( $_POST['desc']   );
@@ -367,6 +380,7 @@ class Admin {
 				. "\n</tbody>"
 				. "\n</table>"
 				. "\n<br /><input type=\"submit\" value=\"".$lang['send']."\" />"
+				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
 				. "\n</form>"
 				."";
 		}	
@@ -402,6 +416,8 @@ class Admin {
 		print "<h2 align=\"center\">".$lang['title_add_admin']."</h2><br />\n";
 	
 		if(!empty($_POST['nick']) && !empty($_POST['pass']) && !empty($_POST['pass_check']) && !empty($_POST['email'])) {
+		
+			$this->security_token($_POST['security'], $_SESSION['token']);
 			
 			$this->nick       = $this->VarProtect( $_POST['nick']       );
 			$this->pass       = $this->VarProtect( $_POST['pass']       );
@@ -450,6 +466,7 @@ class Admin {
 				. "\n</tbody>"
 				. "\n</table>"
 				. "\n<input type=\"submit\" value=\"".$lang['send']."\" />"
+				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
 				. "\n</form>"
 				."";
 		}
@@ -480,8 +497,11 @@ class Admin {
 			}
 			print "\n</select>"
 				. "\n<input type = \"submit\" value = \"".$lang['delete']."\">"
+				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
 				. "\n</form>";
 		}else{
+			$this->security_token($_POST['security'], $_SESSION['token']);
+			
 			$this->sql->sendQuery("DELETE FROM ".__PREFIX__."users WHERE id = '".$this->id."'");		
 			print "<script>alert('Account ".$this->a_user." ".$lang['delete']."!'); location.href = 'admin.php?action=del_admin';</script>";
 		}
@@ -539,15 +559,21 @@ class Admin {
 		
 		if (!empty($_GET['select'])) {				
 			if (in_array ($_GET['select'], $themes)) {
+			
+				$this->security_token($_POST['security'], $_SESSION['token']);
+				
 				$this->sql->sendQuery("UPDATE ".__PREFIX__."config SET themes = '".$this->VarProtect($_GET['select'])."';");
+				
 				print "<script>alert(\"".$lang['theme_changed']."\"); window.location.href = 'admin.php?action=themes';</script>";
 			}else {
 				die ("<script>alert(\"".$lang['theme_not_found']."\"); window.location.href = 'admin.php?action=themes';</script>");
 			}
 		}else{			
+			print "<from method=\"POST\" />";
 			foreach ($themes as $theme)
 				if ($theme != "." && $theme != "..")
-					print $theme . " <a href = 'admin.php?action=themes&select={$theme}'>".$lang['select']."</a><br />\n";
+					print "\n". $theme ." <a href = 'admin.php?action=themes&select={$theme}'>".$lang['select']."</a><br />";
+			print "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />\n</form>";
 		}
 	}
 	
@@ -585,9 +611,12 @@ class Admin {
 				. "\n<input type=\"hidden\" name=\"a_id\" value=\"".$this->admin['id']."\" />"
 				. "\n<input type=\"hidden\" name=\"a_user\" value=\"".$this->admin['username']."\" />"
 				. "\n<input type=\"submit\" value=\"".$lang['change_pass_admin']."\" />"
+				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
 				. "\n</form>";
 			
 			if(!empty($_POST['new_pass'])) {
+				$this->security_token($_POST['security'], $_SESSION['token']);
+				
 				$this->sql->sendQuery("UPDATE ".__PREFIX__."users SET password = '".md5($_POST['new_pass'])."' WHERE id = '".$this->id."'");		
 				print "<script>alert('Account ".$this->VarProtect($_POST['a_user'])." ".$lang['pass_changed']."'); location.href = 'admin.php?action=change_pass_admin';</script>";
 			}
@@ -611,13 +640,15 @@ class Admin {
 				die("<script>alert(\"".$lang['article_not_exist'].".\");location.href = 'admin.php?action=edit_post';</script>");
 	    		
 			if (!empty($_POST['author']) && !empty($_POST['title']) && !empty($_POST['article'])) {
-
+					
+					$this->security_token($_POST['security'], $_SESSION['token']);
+					
 			        $this->date    = @date('d/m/y');
 			        $this->article = $this->VarProtect( $_POST['article']);
 			        $this->title   = $this->VarProtect( $_POST['title']  );
 			        $this->author  = $this->VarProtect( $_POST['author'] );
 			
-			        $this->sql->sendQuery("UPDATE ".__PREFIX__."articles SET post = '".$this->article."', title = '".$this->title."', author = '".$this->author."'");
+			        $this->sql->sendQuery("UPDATE ".__PREFIX__."articles SET post = '".$this->article."', title = '".$this->title."', author = '".$this->author."' WHERE id = '".$this->id."'");
 			
 			        print "<script>alert(\"".$lang['edit_success']."!\");</script>";
 			        print '<script>window.location="admin.php";</script>';
@@ -641,7 +672,9 @@ class Admin {
     			            '.$lang['article'].':<br />
     			            <textarea name="article" cols="100" rows="25">'.$this->data_article['post'].'</textarea><br /><br />
     			            <input type="submit" value="'.$lang['send_edit'].'" />
-    			            <br /><br />';
+    			            <br /><br />
+							<input type="hidden" name="security" value="'.$_SESSION['token'].'" />
+    			            </form>';
 			}
 		}
 	}

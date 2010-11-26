@@ -1,5 +1,17 @@
 				CHANGELOG
 				
+v3.0.1
+	[+] Fix errori nell'installazione (la miseria non avevo aggiornato il file dopo le ultime modifiche loool)
+	[+] Fix CSRF vulnerability in administration (Thanks gabry9191 and hacku Splua Crew)
+	[+] Fix lingua nella classe mysql.class.php
+	[+] Add security class
+		[+] Aggiunto il sistema di magic token per bypassare attacchi CSRF (Thanks hacku)
+	[+] Fix login errore nell'header()
+	[+] Sistemata la funzione VarProtect() (Thanks meh. )
+	[+] Aggiunti gli escape nei BBcode per rendere ancora più pulita la codifica
+	[+] Fixato grave errore nell'amministrazione nell'editing degli articoli (perdonatemi :S)
+	[+] Fix 34 minor bugs
+				
 v3.0 - Beta (First OOP Release)
 	[+] Aggiunta multilingua per ora Italiano e Inglese
 	[+] Aggiunto sistema multi tema per ora 4 temi in totale
