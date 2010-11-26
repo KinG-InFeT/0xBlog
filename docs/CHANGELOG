@@ -1,5 +1,8 @@
 				CHANGELOG
 
+v3.0.3
+	[+] Fix False positive CSRF attemp bug n° #7 (Thanks BlackC0de)
+
 v3.0.2
 	[+] Minor bug fix in install.php
 	[+] Fix SQL Update settings in admin.class.php (Thanks SyStEm-InFeT)

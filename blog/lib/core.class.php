@@ -27,7 +27,7 @@ include("lib/security.class.php");
 
 class Core extends Security {
 	
-	const VERSION = '3.0.2';
+	const VERSION = '3.0.3';
 
 	public function __construct () {
 	

@@ -560,7 +560,7 @@ class Admin extends Security  {
 		if (!empty($_GET['select'])) {				
 			if (in_array ($_GET['select'], $themes)) {
 			
-				$this->security_token($_POST['security'], $_SESSION['token']);
+				$this->security_token($_GET['security'], $_SESSION['token']);
 				
 				$this->sql->sendQuery("UPDATE ".__PREFIX__."config SET themes = '".$this->VarProtect($_GET['select'])."';");
 				
@@ -568,12 +568,10 @@ class Admin extends Security  {
 			}else {
 				die ("<script>alert(\"".$lang['theme_not_found']."\"); window.location.href = 'admin.php?action=themes';</script>");
 			}
-		}else{			
-			print "<from method=\"POST\" />";
+		}else{
 			foreach ($themes as $theme)
 				if ($theme != "." && $theme != "..")
-					print "\n". $theme ." <a href = 'admin.php?action=themes&select={$theme}'>".$lang['select']."</a><br />";
-			print "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />\n</form>";
+					print "\n". $theme ." <a href = 'admin.php?action=themes&select={$theme}&security=".$_SESSION['token']."'>".$lang['select']."</a><br />";
 		}
 	}
 	
