@@ -1,4 +1,27 @@
-				CHANGELOG
+				CHANGELOG FILE
+
+v3.1.0
+	[FIX] Fixed redirection after added article
+	[FIX] Fixed stripslashes in edit_article() function
+	[FIX] Fixed various bugs in install.php
+	[FIX] Fixed redirection in logout() function in login.class.php file
+	[FIX] Fix check version in update system
+	[FIX] Fixed small bugs in eng.php and ita.php (language files)
+	[FIX] Fix write impagination
+	[FIX] Minor bugs fix in all themes
+	[!FIX] Fix SQL Injection in manage_comments() function [HOT]
+	[ADDED] Added category system
+	[ADDED] Added show articles per category
+	[ADDED] Added the possibility MOD, ADD and DELETE the categories
+	[ADDED] Added editor theme
+	[CHANGE] Added name login form
+	[CHANGE] Change name in cookie for username and password
+	
+	Docs:
+	[ADDED] Added the documentation to add a theme to your blog.
+	
+	Upgrade File:
+	[FIX] Minor Bugs fix in upgrade files
 
 v3.0.3
 	[+] Fix False positive CSRF attemp bug n° #7 (Thanks BlackC0de)

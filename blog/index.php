@@ -23,7 +23,17 @@ else
 	$page = 1;
 
 $template->show_header($title = NULL);
-$template->show_blog($page);
+
+switch(@$_GET['mode']) {
+	case 'view_cat':
+		$template->show_articles_cat(@$_GET['cat_id'], $page);
+	break;
+	
+	default:
+		$template->show_blog($page);
+	break;
+}
+
 $template->show_menu($class = NULL);
 $template->show_footer();
 ?>

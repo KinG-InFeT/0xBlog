@@ -27,7 +27,7 @@ include("lib/security.class.php");
 
 class Core extends Security {
 	
-	const VERSION = '3.0.3';
+	const VERSION = '3.1.0';
 
 	public function __construct () {
 	
@@ -165,6 +165,9 @@ class Core extends Security {
 			
 			//estraggo l'email dell'autore dell'articolo
 			$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".$this->articles['author']."'"));
+			
+			//estraggo il nome della categoria
+			$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".$this->articles['cat_id']));
 
 			//BBcode
 			include_once("lib/admin.class.php");
@@ -172,7 +175,7 @@ class Core extends Security {
 			
 			print $BBcode->BBcode($tmp)." ...<a href=\"viewpost.php?id=".$this->articles['id']."\">[".$lang['go_read']."]</a>\n</p>\n";
 			
-			print "\n<br /><br /><p align=\"right\"><b>".$lang['view'].":</b> ".$this->articles['num_read']." ~ <b>".$lang['date'].":</b>".$this->articles['post_date']." ~ <b>".$lang['name_author'].":</b> <em><u><a href=\"mailto:".$this->mail[0]."\">".$this->articles['author']."</a></u></em></p>"
+			print "\n<br /><br /><p align=\"right\"><b>".$lang['categories']."</b>: ".$this->cat['cat_name']." ~ <b>".$lang['view'].":</b> ".$this->articles['num_read']." ~ <b>".$lang['date'].":</b>".$this->articles['post_date']." ~ <b>".$lang['name_author'].":</b> <em><u><a href=\"mailto:".$this->mail[0]."\">".$this->articles['author']."</a></u></em></p>"
 				. "\n<br /> ".$lang['comments'].":".$this->comments."<br />";
 				
 			print "\n<br /><br />\n<hr />";
@@ -180,17 +183,19 @@ class Core extends Security {
 			
 		// genero la lista delle pagine
 		if($pager['numPages'] > 0) {
-			print "Page ";
+			print "\n<p align=\"center\">";
 			
 			for ($i = 1; $i <= $pager['numPages']; $i++) {  
 		
-				if ($i == $page) 
-					echo "-> ".$i; 
-				else 
-					echo " <a href=\"index.php?page=$i\">$i</a>"; 
+				if ($i < $pager['numPages']) 
+					print " <a href=\"index.php?page=".$i."\">[".$i."]</a> -";
+				else
+					print " <a href=\"index.php?page=".$i."\">[".$i."]</a>";
 			}
+			print "\n</p>";
 		}
-		print "</div>\n</div>\n";
+		print "\n</div>"
+			. "\n</div>\n";
 	}
 	
 	public function get_title($id) {
@@ -229,6 +234,9 @@ class Core extends Security {
 		//estraggo l'email dell'autore dell'articolo
 		$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".$this->post['author']."'"));
 		
+		//estraggo il nome della categoria
+		$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".$this->post['cat_id']));
+		
 		//BBcode
 		include_once("lib/admin.class.php");
 		$BBcode = new Admin();
@@ -236,7 +244,7 @@ class Core extends Security {
 		//stampo il singolo post
 		print "\n<p align=\"left\"><b>".$this->post['title']."</b></p>";
 		print "\n<br />\n<p>\n".$BBcode->BBcode($this->post['post'])."</p>";
-		print "\n<br /><br /><p align=\"right\"><b>".$lang['view'].":</b> ".$this->post['num_read']." ~ <b>".$lang['date'].":</b> ".$this->post['post_date']." ~" 				. "<b>".$lang['name_author'].":</b> <em><u><a href=\"mailto:".$this->mail[0]."\">".$this->post['author']."</a></u></em></p>\n<br /><br />";
+		print "\n<br /><br /><p align=\"right\"><b>".$lang['categories']."</b>: ".$this->cat['cat_name']." ~ <b>".$lang['view'].":</b> ".$this->post['num_read']." ~ <b>".$lang['date'].":</b> ".$this->post['post_date']." ~ <b>".$lang['name_author'].":</b> <em><u><a href=\"mailto:".$this->mail[0]."\">".$this->post['author']."</a></u></em></p>\n<br /><br />";
 		print "\n>:<a href=\"viewpost.php?id=".$this->post['id']."&action=comment\">[".$lang['commit']."]</a><br /><br /><hr />";
 		
 		//form per aggiungere un commento
@@ -297,13 +305,17 @@ class Core extends Security {
 				. "\n      <li><a href=\"index.php\">Home Page</a></li>"		
 				. "\n      <li><a href=\"admin.php\">".$lang['list_items']."</a></li>"
 				. "\n      <li><hr /></li>"				
-				. "\n      <li><a href=\"admin.php?action=add_post\">".$lang['new']."</a></li>"
-				. "\n      <li><a href=\"admin.php?action=edit_post\">".$lang['edit']."</a></li>"
+				. "\n      <li><a href=\"admin.php?action=add_post\">".$lang['new_art']."</a></li>"
+				. "\n      <li><a href=\"admin.php?action=edit_post\">".$lang['edit_art']."</a></li>"
 				. "\n      <li><a href=\"admin.php?action=del_post\">".$lang['delete']."</a></li>"
 				. "\n      <li><hr /></li>"
 				. "\n      <li><a href=\"admin.php?action=add_admin\">".$lang['add_admin']."</a></li>"
 				. "\n      <li><a href=\"admin.php?action=change_pass_admin\">".$lang['change_pwd_admin'] ."</a></li>"
 				. "\n      <li><a href=\"admin.php?action=del_admin\">".$lang['del_admin']."</a></li>"	
+				. "\n      <li><hr /></li>"
+				. "\n      <li><a href=\"admin.php?action=add_category\">".$lang['add_category']."</a></li>"
+				. "\n      <li><a href=\"admin.php?action=edit_category\">".$lang['mod_category'] ."</a></li>"
+				. "\n      <li><a href=\"admin.php?action=del_category\">".$lang['del_category']."</a></li>"	
 				. "\n      <li><hr /></li>"
 				. "\n      <li><a href=\"admin.php?action=settings\">".$lang['setting']."</a></li>"				
 				. "\n      <li><a href=\"admin.php?action=clear_blog\">".$lang['reset']."</a></li>"
@@ -312,28 +324,47 @@ class Core extends Security {
 				. "\n      <li><hr /></li>"								
 				. "\n      <li><a href=\"admin.php?action=logout\">Logout</a></li>"																												
 				. "\n    </ul>"
-				. "\n  </div>";
+				. "\n  </div>"
+				. "\n<!-- Admin menu -->";
 		}else{	
 			print "\n<!-- menu -->"
 			. "\n<div id=\"navigation\">"
 			. "\n    <p><h2>Menu</h2></p>"
-			. "\n    <ul>"
+			. "\n    <ul style=\"list-style-type:none;\">"
 			. "\n      <li><a href=\"index.php\">Home Page</a></li>"
-			. "\n      <li><a href=\"search.php\">".$lang['search']."</a></li>"			
+			. "\n      <li><a href=\"search.php\">".$lang['search']."</a></li>"
 			. "\n      <li><a href=\"admin.php\">".$lang['admin']."</a></li>"
 			. "\n    </ul>"
-			. "\n    <hr />"			
-			. "\n  <div id=\"extra\">"
-			. "\n <p><strong>".$lang['most_read']."</strong></p>";
+			. "\n    <hr />"
+			. "\n    ".$lang['categories'].":<br />"
+			. "\n <ul>";
+			
+			$this->query = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories");
+			
+			while($this->cat = mysql_fetch_array($this->query)) {
+				$this->num_art_for_cat = NULL;
+				
+				$this->num_art_for_cat = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".(int) $this->cat['cat_id']."'"));
+				
+				print "\n<li>&raquo; <a href=\"index.php?mode=view_cat&cat_id=".$this->cat['cat_id']."\">".$this->cat['cat_name']."</a> (".$this->num_art_for_cat.")</li>";
+			}
+			
+			print "\n</ul>"
+				. "\n</div>"
+				. "\n<div id=\"list_art_most_read\">"
+				. "\n<hr />"
+				. "\n  <div id=\"extra\">"
+				. "\n <p><strong>".$lang['most_read']."</strong></p>"
+				. "\n<ol>";
 			
 			$this->articles = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles ORDER BY num_read DESC LIMIT 6");
 			
 			while($this->article = mysql_fetch_array($this->articles, MYSQL_ASSOC)) {
-				print "\n<font size=\"2\">".$this->article['post_date']."<br />";
-				print "\n<u><a href=\"viewpost.php?id=".$this->article['id']."\">".$this->article['title']."</a></u></font><br /><br />";
+				print "\n<li><font size=\"2\">".$this->article['post_date']." -> <a href=\"viewpost.php?id=".$this->article['id']."\">".$this->article['title']."</a></font></li>";
 			}
 		
-			print "\n  </div>"
+			print "\n</ol>"
+				. "\n</div>"
 				. "\n</div>"
 				. "\n<!-- fine menu -->\n";
 		}
@@ -396,6 +427,82 @@ class Core extends Security {
 				print "\n<p># <i><u><a href=\"viewpost.php?id=".$this->id."\">".$this->title."</a></u></i></p>";
             }
         }
+	}
+	
+	public function show_articles_cat($cat_id, $page) {
+	global $page;
+	global $lang;
+		
+		$this->cat_id = (int) $cat_id;
+		
+		$this->my_is_numeric($this->cat_id);
+		
+		$this->config = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
+		
+		$total  = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".$this->cat_id."' ORDER by id DESC"));
+		$pager 	= $this->Pagination($total, $this->config['limit'], $page);
+		$offset = $pager['offset'];
+		$limit 	= $pager['limit'];
+		$page 	= $pager['page'];
+		
+		$this->blog = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".$this->cat_id."' ORDER by id DESC LIMIT ".$limit." OFFSET ".$offset);
+	
+		print "\n<div id=\"wrapper\">"
+		    . "\n<div id=\"content\">\n";
+	    
+	    if($total < 1)
+	    	print "\n<p align=\"center\"><b>".$lang['no_items']."</b></p>";
+	    	
+		while($this->articles = mysql_fetch_array($this->blog)) {
+		
+			$this->comments = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."comments WHERE blog_id = '".$this->articles['id']."'"));
+			
+			$tmp = NULL;
+		
+			print "\n<p align=\"left\"><b># <a href=\"viewpost.php?id=".$this->articles['id']."\">".$this->articles['title']."</a></b></p>\n";
+			print "<br />\n"
+				. "<p>\n";
+			
+			$len = strlen($this->articles['post']) / 2;
+		 	
+			for ($i = 0 ; $i < $len ; $i++)
+				$tmp .= $this->articles['post'][$i];
+				
+			//$tmp = str_replace("\n","<br />",$tmp);
+			
+			//estraggo l'email dell'autore dell'articolo
+			$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".$this->articles['author']."'"));
+			
+			//estraggo il nome della categoria
+			$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".$this->articles['cat_id']));
+
+			//BBcode
+			include_once("lib/admin.class.php");
+			$BBcode = new Admin();
+			
+			print $BBcode->BBcode($tmp)." ...<a href=\"viewpost.php?id=".$this->articles['id']."\">[".$lang['go_read']."]</a>\n</p>\n";
+			
+			print "\n<br /><br /><p align=\"right\"><b>".$lang['categories']."</b>: ".$this->cat['cat_name']." ~ <b>".$lang['view'].":</b> ".$this->articles['num_read']." ~ <b>".$lang['date'].":</b>".$this->articles['post_date']." ~ <b>".$lang['name_author'].":</b> <em><u><a href=\"mailto:".$this->mail[0]."\">".$this->articles['author']."</a></u></em></p>"
+				. "\n<br /> ".$lang['comments'].":".$this->comments."<br />";
+				
+			print "\n<br /><br />\n<hr />";
+		}
+			
+		// genero la lista delle pagine
+		if($pager['numPages'] > 0) {
+			print "\n<p align=\"center\">";
+			
+			for ($i = 1; $i <= $pager['numPages']; $i++) {  
+		
+				if ($i < $pager['numPages']) 
+					print " <a href=\"index.php?mode=".$_GET['mode']."&cat_id=".$_GET['cat_id']."&page=".$i."\">[".$i."]</a> -";
+				else
+					print " <a href=\"index.php?mode=".$_GET['mode']."&cat_id=".$_GET['cat_id']."&page=".$i."\">[".$i."]</a>";
+			}
+			print "\n</p>";
+		}
+		print "\n</div>"
+			. "\n</div>\n";
 	}
 		
 }//end class

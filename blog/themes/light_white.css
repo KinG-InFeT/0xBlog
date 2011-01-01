@@ -208,3 +208,19 @@ div#extra {
 	clear:left;
 	width:200px;
 }
+
+div#navigation ul {
+	list-style-type:none;
+}
+
+div#list_art_most_read {
+	text-decoration: none;
+	color: gray;
+	font-family: monospace;
+	text-align: left;
+	float: left;
+	border: 1px dotted gray;
+	margin:15px 0; 
+	width:185px;
+	padding: 17px;	
+}

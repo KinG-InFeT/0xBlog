@@ -162,24 +162,35 @@ class Admin extends Security  {
 			$this->security_token($_POST['security'], $_SESSION['token']);
 			
 		    $this->date    = @date('d/m/y');
-		    $this->article = $this->VarProtect( $_POST['article']);
-		    $this->title   = $this->VarProtect( $_POST['title']  );
-		    $this->author  = $this->VarProtect( $_POST['author'] );
+		    $this->article = $this->VarProtect( $_POST['article']  );
+		    $this->title   = $this->VarProtect( $_POST['title']    );
+		    $this->author  = $this->VarProtect( $_POST['author']   );
+   		    $this->cat_id  = $this->VarProtect( $_POST['category'] );
 		
-		    $this->sql->sendQuery("INSERT INTO ".__PREFIX__."articles (post, title, author,post_date
+		    $this->sql->sendQuery("INSERT INTO ".__PREFIX__."articles (post, title, author, post_date, num_read, cat_id
 		        						) VALUES (
-		        					'".$this->article."', '".$this->title."', '".$this->author."',  '".$this->date."')");
+		        					'".$this->article."', '".$this->title."', '".$this->author."',  '".$this->date."', 0, '".$this->cat_id."')");
 		
 		    print "<script>alert(\"".$lang['add_article_success']."\");</script>";
-		    print '<script>window.location="admin.php";</script>';
+		    header('Location: admin.php');
 		}else{
-		    	//Visualizzo la form
+			$this->cat = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories");
+			
+		    //Visualizzo la form
 			print '<form action="admin.php?action=add_post" method="POST">
 			    '.$lang['author'].':<br />
-    	      	    <input type="text" name="author" value="'.htmlspecialchars($_COOKIE['username']).'"/><br /><br />
+    	      	    <input type="text" name="author" value="'.htmlspecialchars($_COOKIE['0xBlog_Username']).'"/><br /><br />
     	      	    '.$lang['title'].':<br />
     	      	    <input type="text" name="title" /><br /><br />
-    	      	    Smile: :) , :( , :D , ;) , ^_^ .<br /><br />
+    	      	    '.$lang['associate_category'].'<br />
+    	      	    <select name="category">';
+    	      	    
+    	      	    while($this->category = mysql_fetch_array($this->cat))
+    	      	    	print "\n<option value=\"".$this->category['cat_id']."\">".$this->category['cat_name']."</option>";
+    	      	    
+    	    print ' </select>
+    	    		<br /><br />
+    	    		Smile: :) , :( , :D , ;) , ^_^ .<br /><br />
     	      	    BBcode:<br />
     		        * [img] image_path [/img]<br />
 					* [url= url_path ] url_name [/url]<br />
@@ -200,14 +211,16 @@ class Admin extends Security  {
 	public function manage_comments($id) {
 	global $lang;
 		
-		$this->id = intval($id);
+		$this->id = (int) $id;
+		
+		$this->my_is_numeric($this->id);
 				
 		if(empty($this->id))
 			die("<div id=\"error\"><h2 align=\"center\">".$lang['id_not_exist']."</p></div>");
 		
 		print "<h2 align=\"center\">".$lang['title_comments']."</h2><br />\n";
 		
-		$this->comments = $this->sql->sendQuery("SELECT id, blog_id, name, comment FROM ".__PREFIX__."comments WHERE blog_id = '{$id}'");
+		$this->comments = $this->sql->sendQuery("SELECT id, blog_id, name, comment FROM ".__PREFIX__."comments WHERE blog_id = '".$this->id."'");
 		
 		if(mysql_num_rows($this->comments) < 1) {
 			print "<p><b>".$lang['no_comment']."</b></p>";
@@ -301,10 +314,12 @@ class Admin extends Security  {
        			
        			$this->sql->sendQuery("TRUNCATE TABLE ".__PREFIX__."articles");
        			$this->sql->sendQuery("TRUNCATE TABLE ".__PREFIX__."comments");
+				$this->sql->sendQuery("TRUNCATE TABLE ".__PREFIX__."categories");
        			$this->sql->sendQuery("UPDATE ".__PREFIX__."config SET themes = 'default.css'");
        			
        			print "\n<p>TRUNCATE TABLE ".__PREFIX__."articles: <font color='green'>Success</font><br />\n"
        			    . "TRUNCATE TABLE ".__PREFIX__."comments: <font color='green'>Success</font>\n"
+       			    . "TRUNCATE TABLE ".__PREFIX__."categories: <font color='green'>Success</font>\n"
        			    . "<br />UPDATE ".__PREFIX__."config SET themes to default.css: <font color='green'>Success</font>\n"       			    
        			    . "<br /><br /><u><a href='admin.php'>".$lang['title_zone_admin']."</a></u></p>\n";
        		}else{
@@ -492,7 +507,7 @@ class Admin extends Security  {
 				$this->a_id   = $this->users['id'];
 				$this->a_user = $this->users['username'];
 				
-				if($_COOKIE['username'] != $this->a_user)
+				if($_COOKIE['0xBlog_Username'] != $this->a_user)
 					print "\n<option value = \"".$this->a_id."\">".$this->a_user."</option>";
 			}
 			print "\n</select>"
@@ -532,11 +547,14 @@ class Admin extends Security  {
 			@fclose($fsock);
 			
 			$update = htmlspecialchars($update);
+			
+			$update1  = str_replace(".", "", $update);
+			$version1 = str_replace(".", "", $version);
 	
-			if ($version == $update)
+			if ($version1 <= $update1)
 				$version_info = "<p style=\"color:green\">".$lang['update_1'].".</p><br />";
 			else
-				$version_info = "\n<p style=\"color:red\">".$lang['update_2'].".<br />\n".$lang['update_3'].":". $update."\n"
+				$version_info = "\n<p style=\"color:red\">".$lang['update_2'].".<br />\n".$lang['update_3'].": ". $update."\n"
 							  . "<br /><br />Link Download: <a href=\"http://0xproject.hellospace.net/#0xBlog\">".$lang['update_4']."</a><br />\n";
 		}else{
 			if ($errstr)
@@ -571,14 +589,53 @@ class Admin extends Security  {
 		}else{
 			foreach ($themes as $theme)
 				if ($theme != "." && $theme != "..")
-					print "\n". $theme ." <a href = 'admin.php?action=themes&select={$theme}&security=".$_SESSION['token']."'>".$lang['select']."</a><br />";
+					print "\n". $theme ." <a href = 'admin.php?action=themes&select=".$theme."&security=".$_SESSION['token']."'>".$lang['select']."</a> ~ <a href=\"admin.php?action=edit_theme&theme_name=".$theme."\">".$lang['send_edit']."</a><br />";
+		}
+	}
+	
+	
+	public function edit_theme($theme_name) {
+	global $lang;
+	
+		$this->theme_name = "themes/".htmlspecialchars(stripslashes($theme_name));
+		
+		print "<h2 align=\"center\">".$lang['title_edit_theme']."</h2><br />\n";	
+		
+		if (!empty($_POST['send']) && ($_POST['send'] == 1) && !empty($_POST['theme_file'])) {
+
+			$this->security_token($_POST['security'], $_SESSION['token']);
+
+			$scrivi_file = fopen($this->theme_name,"w");
+			fwrite($scrivi_file,htmlspecialchars(stripslashes($_POST['theme_file']))) or die("Error writing file:".$this->theme_name);
+			fclose($scrivi_file);
+				
+			print "<script>alert(\"".$lang['theme_edited']."\"); window.location.href = 'admin.php?action=edit_theme';</script>";
+
+		}else{
+
+			$leggi_file  = fopen($this->theme_name,"r");
+			$dim_file    = filesize($this->theme_name);
+			
+			$this->theme_file = fread($leggi_file,$dim_file);
+			
+			fclose($leggi_file);
+
+			print "\n<form method=\"POST\" action=\"admin.php?action=edit_theme\" />"
+				. "\n<p align=\"center\">Theme File:<br />"
+				. "\n<textarea name=\"theme_file\" rows=\"25\" cols=\"100\">".$this->theme_file."</textarea><br />"
+				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
+				. "\n<input type=\"hidden\" name=\"theme_name\" value=\"".$this->theme_name."\" />"
+				. "\n<input type=\"hidden\" name=\"send\" value=\"1\" />"
+				. "\n<input type=\"submit\" value=\"".$lang['send_edit']."\" /></p>"
+				. "\n</form>"
+				. "";
 		}
 	}
 	
 	public function change_pass_admin($id) {
 	global $lang;
 			
-		$this->id = intval($id);
+		$this->id = (int) $id;
 		
 		print "<h2 align=\"center\">".$lang['title_change_pass']."</h2><br />\n";
 		
@@ -642,7 +699,7 @@ class Admin extends Security  {
 					$this->security_token($_POST['security'], $_SESSION['token']);
 					
 			        $this->date    = @date('d/m/y');
-			        $this->article = $this->VarProtect( $_POST['article']);
+			        $this->article = stripslashes($this->VarProtect( $_POST['article']));
 			        $this->title   = $this->VarProtect( $_POST['title']  );
 			        $this->author  = $this->VarProtect( $_POST['author'] );
 			
@@ -676,6 +733,123 @@ class Admin extends Security  {
 			}
 		}
 	}
+
+	public function add_category() {
+	global $lang;
+	
+		print "<h2 align=\"center\">".$lang['title_add_category']."</h2><br />\n";
+	
+		if(!empty($_POST['cat_name'])) {
+	
+			$this->security_token($_POST['security'], $_SESSION['token']);
+		
+			$this->cat_name = $this->VarProtect( $_POST['cat_name'] );
+			
+			$this->sql->sendQuery("INSERT INTO ".__PREFIX__."categories (`cat_name`) VALUES ('".$this->cat_name."')");
+			
+			print "<script>alert(\"".$lang['cat_add_success']."!\");</script>";
+			
+			header('Location: admin.php');
+		
+		}else{
+	
+			print "\n<br /><br />"
+				. "\n<form method=\"POST\" action=\"admin.php?action=add_category\" />"
+				. "\n<table style=\"text-align: left;\" border=\"0\" cellpadding=\"2\" width=\"100%\" cellspacing=\"2\">"
+				. "\n<tbody>"
+				. "\n<tr>"
+				. "\n	<td>".$lang['cat_name'].":</td>"
+				. "\n	<td><input type=\"text\" name=\"cat_name\" /></td>"
+				. "\n</tr>"
+				. "\n</tbody>"
+				. "\n</table>"
+				. "\n<input type=\"submit\" value=\"".$lang['send']."\" />"
+				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
+				. "\n</form>"
+				."";
+	
+		}
+	}
+	
+	public function edit_category($id) {
+	global $lang;
+			
+		$this->id = (int) $id;
+		
+		print "<h2 align=\"center\">".$lang['title_edit_category']."</h2><br />\n";
+		
+		if(empty($this->id)) {
+		
+			print "\n<form method = \"POST\" action=\"admin.php?action=edit_category\" />\n"
+				. "\n<b>".$lang['list_categories'].": </b><br />"
+				. "\n<select name = \"cat_id\">\n";
+					
+			$this->query = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories");
+			
+			while ($this->cat = mysql_fetch_array ($this->query , MYSQL_ASSOC)) {
+			
+				$this->cat_id   = $this->cat['cat_id'];
+				$this->cat_name = $this->cat['cat_name'];
+
+				print "\n<option value = \"".$this->cat_id."\">".$this->cat_name."</option>";
+			}
+			print "\n</select>"
+				. "\n<input type = \"submit\" value = \"".$lang['select']."\">"
+				. "\n</form>";
+		}else{
+			$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories WHERE cat_id = '".$this->id."'"));
+			
+			print "\n<form method = \"POST\" action=\"admin.php?action=edit_category\" />\n"
+				. "\nCategory: <input type=\"text\" name=\"new_cat\" value=\"".$this->cat['cat_name']."\" /><br />"
+				. "\n<input type=\"hidden\" name=\"cat_id\" value=\"".$this->id."\" />"
+				. "\n<input type=\"submit\" value=\"".$lang['change_name_cat']."\" />"
+				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
+				. "\n</form>";
+			
+			if(!empty($_POST['new_cat'])) {
+				$this->security_token($_POST['security'], $_SESSION['token']);
 				
+				$this->sql->sendQuery("UPDATE ".__PREFIX__."categories SET cat_name = '".$this->VarProtect($_POST['new_cat'])."' WHERE cat_id = '".$this->id."'");		
+				print "<script>alert('".$lang['cat_edit_success']."'); location.href = 'admin.php?action=edit_category';</script>";
+			}
+		}
+	}
+	
+	public function del_category($id) {
+	global $lang;
+	
+		$this->id = (int) $id;
+		
+		print "<h2 align=\"center\">".$lang['title_del_category']."</h2><br />\n";
+	
+		if(empty($this->id)) {
+		
+			print "\n<form method = \"POST\" action=\"admin.php?action=del_category\" />"
+				. "\n<b>".$lang['list_categories'].": </b><br />"
+				. "\n<select name = \"cat_id\">";
+					
+			$this->query = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories");
+			
+			while ($this->cat = mysql_fetch_array ($this->query , MYSQL_ASSOC)) {
+			
+				$this->cat_id   = $this->cat['cat_id'];
+				$this->cat_name = $this->cat['cat_name'];
+				
+				$this->num_art_for_cat = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".$this->cat_id."'"));
+				
+				print "\n<option value = \"".$this->cat_id."\">".$this->cat_name." (".$this->num_art_for_cat.")</option>";
+			}
+			
+			print "\n</select>"
+				. "\n<input type = \"submit\" value = \"".$lang['delete']."\">"
+				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
+				. "\n</form>";
+		}else{
+			$this->security_token($_POST['security'], $_SESSION['token']);
+			
+			$this->sql->sendQuery("DELETE FROM ".__PREFIX__."categories WHERE cat_id = '".$this->id."'");		
+			print "<script>alert('".$lang['cat_del_success']."!'); location.href = 'admin.php?action=del_category';</script>";
+		}
+	}
 }	
 ?>		

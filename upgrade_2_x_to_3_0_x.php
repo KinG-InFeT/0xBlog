@@ -1,4 +1,5 @@
 <?php
+ob_start();
 if(!file_exists("config.php"))
 	die("File config.php does not exist!");
 else
@@ -13,18 +14,18 @@ else
 		Upgrade 2.5 - Final to 3.0 - Beta
 		<br />
 		  
-<form method="POST" action="upgrade.php?send=1" />
+<form method="POST" action="?send=1" />
 Email: <input type="text" name="mail" /><br /><br />
 <input type="submit" value="Upgrade" />
 </form>
 <?php
 
 if((@$_GET['send'] == 1) && (!empty($_POST['mail']))) {
-
-	$email = mysql_real_escape_string( htmlspecialchars( stripslashes( $_POST['mail'] )));
 	
 	  mysql_connect($db_host, $db_user, $db_pass) or die(mysql_error());
 	mysql_select_db($db_name) or die(mysql_error());
+	
+	$email = mysql_real_escape_string( htmlspecialchars( stripslashes( $_POST['mail'] )));
 	
 	//aggiunta della colonna num_read nella tabella articles
 	mysql_query("ALTER TABLE ".PREFIX."articles ADD num_read INT");

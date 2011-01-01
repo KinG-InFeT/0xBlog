@@ -10,8 +10,8 @@
  * @link http://0xproject.hellospace.net#0xBlog
  *
  */
- 
-error_reporting(0);
+
+ob_start();
 
 if(!(file_exists('./config.php')))
 	die("<b>File 'config.php' inesistente! <br />
@@ -122,11 +122,25 @@ if (   !empty( $_POST['username'] )
 	&& !empty( $_POST['footer']   )
 	&& !empty( $_POST['lang']     )
 	) {
+		
+	//Dati per connessione al MySQL
+	$host = htmlspecialchars( $_POST['host'] );
+	$user = htmlspecialchars( $_POST['user'] );
+	$pass = htmlspecialchars( $_POST['pass'] );
+	$name = htmlspecialchars( $_POST['name'] );
 	
+	//Dati Connessione MySQL e Connessione
+	$db_connect = @mysql_connect  ( $host, $user, $pass );
+	$db_select  = @mysql_select_db( $name );
+
+	if(!$db_connect)
+		die("<b>Errore durante la connessione al database MySQL</b><br />".mysql_errno()." : ".mysql_error());
+	elseif(!$db_select)
+		die("<b>Errore durante la selezione del database MySQL</b><br />".mysql_errno()." : ".mysql_error());
 	
 	//dati amministrazione
-	$user_admin    = VarProtect    ( $_POST['username'] );
-	$pass_admin    = md5(VarProtect( $_POST['password'] ));
+	$user_admin    = VarProtect ( $_POST['username'] );
+	$pass_admin    =        md5 ( $_POST['password'] );
 	
 	//dati di configurazione
 	$title   = VarProtect( $_POST['title']   );
@@ -136,24 +150,8 @@ if (   !empty( $_POST['username'] )
 	$footer  = VarProtect( $_POST['footer']  );
 	$prefix  = VarProtect( $_POST['prefix']  );
 	$lang    = VarProtect( $_POST['lang']    );	
-	
-	//Dati per connessione al MySQL
-	$host = VarProtect( $_POST['host'] );
-	$user = VarProtect( $_POST['user'] );
-	$pass = VarProtect( $_POST['pass'] );
-	$name = VarProtect( $_POST['name'] );
-	
-	//Dati Connessione MySQL e Connessione
-	$db_connect = @mysql_connect  ( $host, $user, $pass );
-	$db_select  = @mysql_select_db( $name );
-
-	if(!$db_connect)
-		die("<b>Errore durante la connessione al database MySQL</b><br>".mysql_errno()." : ".mysql_error());
-	elseif(!$db_select)
-		die("<b>Errore durante la selezione del database MySQL</b><br>".mysql_errno()." : ".mysql_error());
 		
 	//creo la tabella users
-		
 	mysql_query("CREATE TABLE `".$prefix."users` (
 	  `id` int(11) NOT NULL auto_increment,
 	  `username` text NOT NULL,
@@ -193,6 +191,7 @@ if (   !empty( $_POST['username'] )
 	  `post` text NOT NULL,
 	  `post_date` text NOT NULL,
 	  `num_read` INT NOT NULL,
+  	  `cat_id` INT NOT NULL,
 	  KEY `id` (`id`)
 	) TYPE=MyISAM AUTO_INCREMENT=1 ;") or die(mysql_error());
 	
@@ -208,6 +207,18 @@ if (   !empty( $_POST['username'] )
 	) TYPE=MyISAM AUTO_INCREMENT=1 ;") or die(mysql_error());
 	
 	echo "Table <b>'".$prefix."comments'</b> created with success<br />\n";
+	
+	mysql_query("CREATE TABLE `".$prefix."categories` (
+					`cat_id` int( 11 ) NOT NULL AUTO_INCREMENT,
+					`cat_name` text NOT NULL ,
+				KEY `cat_id` ( `cat_id` )
+				) TYPE = MYISAM AUTO_INCREMENT = 1;") or die(mysql_error());
+	
+	echo "Table <b>'".$prefix."categories'</b> created with success<br />\n";
+	
+	mysql_query("INSERT INTO ".$prefix."categories (`cat_id`, `cat_name`) VALUES ('1', 'General');") or die(mysql_error());
+		
+	echo "<b>Default Categories</b> added with success<br />\n";
 	
 	//creo il file config.php ;)
 	$config = '<?php
@@ -279,8 +290,8 @@ $db_name = "'.$name.'";
 	</tr>
 	<tr>
 		<td><font color="white">Footer Part:</font></td>
-		<td><font color="white"><input type="text" name="footer" size="40" value="Copyright 2011 By Mio Nome"></font></td>
-		<td bgcolor="black"><a onclick="window.alert('Example: Copyright 20../20.. By Mio Nome')"><img alt="img/info.png" border="0" src="img/info.png"></a></td>
+		<td><font color="white"><input type="text" name="footer" size="40" value="Copyright <?php print date("Y"); ?> By ..."></font></td>
+		<td bgcolor="black"><a onclick="window.alert('Example: Copyright 20../20.. By my name')"><img alt="img/info.png" border="0" src="img/info.png"></a></td>
 	</tr>	
 	<tr>
 		<td><font color="white">How many items per page? ( Recommended 6):</font></td>

@@ -30,7 +30,7 @@ $template->show_header($title = 'Administration');
 print "\n<div id=\"wrapper\">"
     . "\n<div id=\"content\">";
 
-$login->form_login(@$_COOKIE['username'], @$_COOKIE['password']);
+$login->form_login(@$_COOKIE['0xBlog_Username'], @$_COOKIE['0xBlog_Password']);
     
 switch($action) {
 
@@ -54,7 +54,20 @@ switch($action) {
 	case 'del_comment':
 		$admin->del_comment(@$_POST['id']);
 	break;
+
+	/* Manager categories */
+	case 'add_category':
+		$admin->add_category();
+	break;
+
+	case 'edit_category';
+		$admin->edit_category(@$_REQUEST['cat_id']);
+	break;
 	
+	case 'del_category':
+		$admin->del_category(@$_REQUEST['cat_id']);
+	break;
+		
 	/* admin struments */
 	case 'add_admin':
 		$admin->add_admin();
@@ -72,7 +85,11 @@ switch($action) {
 	case 'themes':
 		$admin->themes();
 	break;
-
+	
+	case 'edit_theme':
+		$admin->edit_theme(@$_REQUEST['theme_name']);
+	break;
+	
 	case 'settings':
 		$admin->settings();
 	break;
@@ -87,7 +104,7 @@ switch($action) {
 	
 	//logout
 	case 'logout':
-		$login->logout(@$_COOKIE['username'], @$_COOKIE['password']);
+		$login->logout(@$_COOKIE['0xBlog_Username'], @$_COOKIE['0xBlog_Password']);
 	break;
 	
 	//print all articles for manage

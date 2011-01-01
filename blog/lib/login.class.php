@@ -65,8 +65,8 @@ class Login extends Security {
 		
 			if ($this->username == $this->user['username'] && $this->password == $this->user['password']) {			
 			
-				setcookie ("username", $this->username, time () + (3600 * 24), "/");
-				setcookie ("password", $this->password, time () + (3600 * 24), "/");
+				setcookie ("0xBlog_Username", $this->username, time () + (3600 * 24), "/");
+				setcookie ("0xBlog_Password", $this->password, time () + (3600 * 24), "/");
 				
 				$this->token = $this->generate_token();
 				
@@ -85,12 +85,14 @@ class Login extends Security {
 		$this->password = $this->VarProtect($pass);		
 		
 		if($this->is_admin($this->username, $this->password) == TRUE) {
-			setcookie ("username", $this->username, time () - (3600 * 24), "/");
-			setcookie ("password", $this->password, time () - (3600 * 24), "/");
+			setcookie ("0xBlog_Username", $this->username, time () - (3600 * 24), "/");
+			setcookie ("0xBlog_Password", $this->password, time () - (3600 * 24), "/");
 			
-			print "\n<script>window.location=\"index.php\";</script>";
+			header('Location: index.php');
+			exit;
 		}else{
-			die("<script>window.location=\"index.php\";</script>");
+			header('Location: index.php');
+			exit;
 		}
 	}
 	
@@ -108,7 +110,7 @@ class Login extends Security {
 				die(  "\n <fieldset>"
 		   			. "\n<legend>Login</legend>"
 					. "\n     <br /><p align=\"center\">"
-					. "\n     <FORM action=\"admin.php\" method=\"POST\">"
+					. "\n     <FORM action=\"admin.php\" method=\"POST\" name=\"0xBlog_Login\">"
 					. "\n     Username :"
 					. "\n     <INPUT type=\"text\" name=\"user\" Style=\"Color: #0044FF\"><br />"
 					. "\n     Password :"

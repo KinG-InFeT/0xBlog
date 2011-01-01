@@ -16,10 +16,10 @@ $lang = array();
 //messaggi gi errore
 $lang['id_not_exist']      = 'ID non Inserito!';
 $lang['article_not_exist'] = 'L\'Articolo non esiste!';
-$lang['no_match_captcha']  = 'Errore!\n Inserire la chiave non è valida. Prova di nuovo.';
-$lang['fill_camp']         = 'Errore!\n Riempire tutti i campi.';
-$lang['long_comment']      = 'Errore!\n I caratteri devono essere inferiori a 500!';
-$lang['lang_not_exist']    = 'Errore!\n Il file lingua selezionato non esiste!';
+$lang['no_match_captcha']  = 'Errore! Inserire la chiave non è valida. Prova di nuovo.';
+$lang['fill_camp']         = 'Errore! Riempire tutti i campi.';
+$lang['long_comment']      = 'Errore! I caratteri devono essere inferiori a 500!';
+$lang['lang_not_exist']    = 'Errore! Il file lingua selezionato non esiste!';
 $lang['nick_exist']        = 'Errore! Il nick inserito &egrave; gi&agrave; esistente';
 $lang['pass_not_equal']    = 'Errore! le password non sono uquali';
 $lang['email_exist']       = 'Errore! La mail inserita &egrave; già utilizzata';
@@ -35,6 +35,10 @@ $lang['account_create']      = 'Creato con Successo';
 $lang['theme_changed']       = 'Tema Cambiato con successo';
 $lang['pass_changed']        = 'Password Cambiata';
 $lang['edit_success']        = 'Articolo editato con successo';
+$lang['cat_add_success']     = 'Categoria Aggiunta con Successo';
+$lang['cat_edit_success']    = 'Categoria Modificata con Successo';
+$lang['cat_del_success']     = 'Categoria Eliminata con Successo';
+$lang['theme_edited']        = 'Tema editato con successo!';
 
 //messaggi informativi
 $lang['no_items']   = 'Non &egrave; stato ancora inserito alcun oggetto!';
@@ -43,7 +47,7 @@ $lang['most_read']  = 'Articoli Pi&ugrave; letti';
 $lang['result']     = 'Risultati';
 $lang['no_result']  = 'Nessun Risultato';
 $lang['back']       = 'Indietro';
-$lang['send_edit']  = 'Edita Articolo';
+$lang['send_edit']  = 'Edita';
 
 //messaggi generali
 $lang['go_read']    = 'Continua a leggere';
@@ -57,7 +61,7 @@ $lang['article']    = 'Articolo';
 $lang['delete']     = 'Elimina';
 $lang['si']         = 'SI';
 $lang['select']     = 'Seleziona';
-$lang['search']     = 'testo di Ricerca';
+$lang['search']     = 'Testo di Ricerca';
 
 $lang['add_captcha_code'] = 'Inserire Codice Captcha';
 
@@ -65,13 +69,14 @@ $lang['name_author'] = 'Autore';
 $lang['comments']    = 'Commenti';
 
 //menu user
-$lang['search'] = 'Cerca';
+$lang['search']      = 'Cerca';
+$lang['categories']  = 'Categorie';
 
 //menu admin
 $lang['admin']       = 'Pannello Amministrazione';
 $lang['list_items']  = 'Lista Articoli per Gestione';
-$lang['new']         = 'Nuovo Articolo';
-$lang['edit']        = 'Edita Articolo';
+$lang['new_art']     = 'Nuovo Articolo';
+$lang['edit_art']    = 'Edita Articolo';
 $lang['delete_art']  = 'Cancella Articolo';
 $lang['add_admin']   = 'Aggiunti Amministratore';
 $lang['del_admin']   = 'Cancella Amministratore';
@@ -79,6 +84,10 @@ $lang['setting']     = 'Configurazione';
 $lang['reset']       = 'Resetta Blog';
 $lang['theme_admin'] = 'Gestione Template';
 $lang['update']      = 'Cerca Aggiornamenti';
+
+$lang['add_category'] = 'Aggiunti Categoria';
+$lang['mod_category'] = 'Modifica Categoria';
+$lang['del_category'] = 'Elimina Categoria';
 
 $lang['change_pwd_admin'] = 'Cambia Password agli Admin';
 
@@ -114,18 +123,26 @@ $lang['theme_1']            = 'Temi Disponibili';
 $lang['change_pass_admin']  = 'Cambia Password';
 $lang['edit_article_ins']   = 'ID dell\'Articolo da Editare';
 $lang['mod']                = 'Modifica';
+$lang['associate_category'] = 'Associa alla Categoria:';
+$lang['cat_name']           = 'Nome Categoria';
+$lang['list_categories']    = 'Lista Categorie';
+$lang['change_name_cat']    = 'Cambia Nome alla Categoria';
 
 //titoli amministrazione
-$lang['title_new_article']  = 'Nuovo Articolo';
-$lang['title_comments']     = 'Gestione Commenti';
-$lang['title_del_article']  = 'Cancella Articolo';
-$lang['title_reset_blog']   = 'Resetta Blog';
-$lang['title_settings']     = 'Gestione delle Impostazioni';
-$lang['title_add_admin']    = 'Aggiunti Amministratore';
-$lang['title_del_admin']    = 'Cancella Amministratori';
-$lang['title_update']       = 'Cerca Aggiornamenti';
-$lang['title_theme']        = 'Gestione Template';
-$lang['title_change_pass']  = 'Cambia Password agli Admin';
-$lang['title_edit_article'] = 'Edita Articoli';
+$lang['title_new_article']   = 'Nuovo Articolo';
+$lang['title_comments']      = 'Gestione Commenti';
+$lang['title_del_article']   = 'Cancella Articolo';
+$lang['title_reset_blog']    = 'Resetta Blog';
+$lang['title_settings']      = 'Gestione delle Impostazioni';
+$lang['title_add_admin']     = 'Aggiunti Amministratore';
+$lang['title_del_admin']     = 'Cancella Amministratori';
+$lang['title_update']        = 'Cerca Aggiornamenti';
+$lang['title_theme']         = 'Gestione Template';
+$lang['title_change_pass']   = 'Cambia Password agli Admin';
+$lang['title_edit_article']  = 'Edita Articoli';
+$lang['title_add_category']  = 'Aggiungi Categoria';
+$lang['title_edit_category'] = 'Modifica Categorie';
+$lang['title_del_category']  = 'Elimina Categorie';
+$lang['title_edit_theme']    = 'Modifica File Tema';
 
 ?>

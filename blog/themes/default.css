@@ -19,8 +19,13 @@ a {
 }
 
 td, input {
-	Font-Family: Verdana, Tahoma, Arial; 
-	Font-Size: 10;
+	font-family: Verdana, Tahoma, Arial; 
+	font-size: 10;
+}
+
+div#list_art_most_read {
+	margin:15px 0; 
+	padding:0;
 }
 		
 div#header {
@@ -48,12 +53,12 @@ div#navigation {
 
 div#navigation ul {
 	margin:15px 0; 
-	padding:0; 
+	padding:0;
 	list-style-type:none;
 }
 
 div#navigation li {
-	margin-bottom:5px;
+	margin-bottom:3px;
 }
 
 div#extra {
