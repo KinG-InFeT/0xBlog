@@ -699,22 +699,37 @@ class Admin extends Security  {
 					$this->security_token($_POST['security'], $_SESSION['token']);
 					
 			        $this->date    = @date('d/m/y');
-			        $this->article = stripslashes($this->VarProtect( $_POST['article']));
+			        $this->article = $this->VarProtect( $_POST['article']);
 			        $this->title   = $this->VarProtect( $_POST['title']  );
 			        $this->author  = $this->VarProtect( $_POST['author'] );
+			        $this->cat_id  = (int) $_POST['category'];
 			
-			        $this->sql->sendQuery("UPDATE ".__PREFIX__."articles SET post = '".$this->article."', title = '".$this->title."', author = '".$this->author."' WHERE id = '".$this->id."'");
+			        $this->sql->sendQuery("UPDATE ".__PREFIX__."articles SET post = '".$this->article."', title = '".$this->title."', author = '".$this->author."', cat_id = '".$this->cat_id."' WHERE id = '".$this->id."'");
 			
 			        print "<script>alert(\"".$lang['edit_success']."!\");</script>";
 			        print '<script>window.location="admin.php";</script>';
 			    }else{
 			    	$this->data_article = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE id = '".$this->id."'"));
 			    	
+    				$this->cat = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories");
+    				
 					print '<form action="admin.php?action=edit_post&id='.$this->id.'" method="POST">
 						    '.$lang['author'].':<br />
     			            <input type="text" name="author" value="'.$this->data_article['author'].'"/><br /><br />
     			            '.$lang['title'].':<br />
-    			            <input type="text" name="title" value="'.$this->data_article['title'].'" /><br /><br />
+    			            <input type="text" name="title" value="'.$this->data_article['title'].'" /><br />
+    			            <br />
+    			      	    '.$lang['associate_category'].'<br />
+    			      	    <select name="category">';
+    			      	    
+    			      	    $this->cat_name = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".$this->data_article['cat_id'].""));
+    			      	    
+		      	   print "\n<option value=\"".$this->data_article['cat_id']."\">".$this->cat_name['cat_name']."</option>";
+    		      	    
+    			      	    while($this->category = mysql_fetch_array($this->cat))
+    			      	    	print "\n<option value=\"".$this->category['cat_id']."\">".$this->category['cat_name']."</option>";
+    	      	    
+		    	    print ' </select><br />
     			            Smile: :) , :( , :D , ;) , ^_^ .<br /><br />
     			            BBcode:<br />
     			            * [img] image_path [/img]<br />
