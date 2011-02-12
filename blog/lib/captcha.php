@@ -10,34 +10,56 @@
  * @link http://0xproject.hellospace.net#0xBlog
  *
  */
+
 session_start();
 
-$charmap = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
-$display = $charmap{rand(0,59)};
+@$hash = $_GET['hash'];
 
-for($i = 1; $i < 6; $i++)
-	$display .= $charmap{rand(0,59)};
+//stringa inutile per il captcha (Anti-Cache-Loading)
+@$rnd = $_GET['rnd'];
 
-$_SESSION['captcha'] = $display;
+if($hash != $_SESSION['hash'])
+	die("FAIL");
 
-header('Content-type: image/png');
+@$code = $_SESSION['captcha'];
 
-$string = $display;
-$height = 20;
-$width  = 60;
+if (empty ($code))
+	die("FAIL");
+	
+header ('Content-type: image/png');
+$x = 120;
+$y = 30;
 
-$image = imagecreate($width, $height);
-$line  = imagecolorallocate($image, rand(90,160), rand(90,160), rand(90,160));
+$im = imagecreate ($x, $y);
 
-for($i=1; $i<30; $i++)
-	$line = imageline($image, rand(0,60), rand(0,20), rand(0,60), rand(0,20), imagecolorallocate($image, rand(90,160), rand(90,160), rand(90,160)));;
+$bgcolor   = array (rand (0,255),rand (0,255),rand (0,255));
+$textcolor = array (~$bgcolor[0],~$bgcolor[1],~$bgcolor[2]);
 
-$bgcolor = imagecolorallocate($image, rand(150,255), rand(150,255), rand(150,255));
-$fcolor  = imagecolorallocate($image, rand(0,100), rand(0,100), rand(0,100));
+$bg = imagecolorallocate ($im, $bgcolor[0], $bgcolor[1], $bgcolor[2]);
+$tc = imagecolorallocate ($im, $textcolor[0], $textcolor[1], $textcolor[2]);
 
-imagefill($image, 0, 0, $bgcolor);
-imagestring($image, 5, rand(1,6), rand(1,4), $display, $fcolor);
-imagepng($image);
+for ($i = 0; $i < strlen($code); $i++) {
+	imagestring ($im,5, rand($i*15,$i*15+5), rand(0,15), $code[$i], $tc);
+}
 
-imagedestroy($image);
+for ($i = 0; $i < 25; $i++) {
+	$lncol = array (rand(0,255),rand(0,255),rand(0,255));
+	$ln = imagecolorallocate ($im, $lncol[0], $lncol[1], $lncol[2]);
+	$coord = array (rand(0,90),rand(0,30));
+	imageline($im, $coord[0], $coord[1], $coord[0], $coord[1], $ln);
+}
+
+for($i = 0; $i < 80; $i++) {
+	$x1 = rand(3,$x-3);
+	$y1 = rand(3,$y-3);
+	$x2 = $x1-2-rand(0,8);
+	$y2 = $y1-2-rand(0,8);
+	$ln = imagecolorallocate ($im, $lncol[0], $lncol[1], $lncol[2]);
+	imageline($im,$x1,$y1,$x2,$y2,$ln);
+}
+
+imagepng ($im);
+
+imagedestroy ($im);
+?>
 ?>

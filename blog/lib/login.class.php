@@ -79,7 +79,9 @@ class Login extends Security {
 		}
 	}
 	
-	public function logout($user, $pass) {
+	public function logout($user, $pass, $token) {
+		
+		$this->security_token($token, $_SESSION['token']);
 		
 		$this->username = $this->VarProtect($user);
 		$this->password = $this->VarProtect($pass);		

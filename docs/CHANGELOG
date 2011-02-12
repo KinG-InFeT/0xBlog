@@ -1,4 +1,13 @@
 				CHANGELOG FILE
+				
+v3.1.1
+	[!FIX] Fix XSS in cat_id and mode GET variable in viewtopic.php #bug 10 (Thanks gabry9191)
+	[FIX] Fixed CSRF in logout function
+	[!FIX] Fix SQL Injection in viewtopic.php and index.php (fix bug #12 thanks gabry9191) [HOT]
+	[!FIX] Fix False positive CSRF attemp in delete article
+	[ADDED] Added automatic generating youtube link to youtube video BBcode (Thanks StutM)
+	[ADDED] Added [center][/center] BBcode
+	[CHANGE] Total rewrite captcha system and add reloader captcha (Thanks darkjoker and d0mhc)
 
 v3.1.0
 	[FIX] Fixed redirection after added article

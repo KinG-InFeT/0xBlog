@@ -93,7 +93,7 @@ class Admin extends Security  {
 				. "\n	  <td><a href=\"viewpost.php?id=".$this->article['id']."\">[".$lang['view_post']."]</a></td>"
 				. "\n	  <td>".mysql_num_rows($this->comment)."".$this->manage."</td>"
 				. "\n	  <td>".$this->article['post_date']."</td>"
-				. "\n	  <td><a href=\"admin.php?action=del_post&id=".$this->article['id']."\">[X]</a> ~ <a href=\"admin.php?action=edit_post&id=".$this->article['id']."\">[".$lang['mod']."]</a></td>"
+				. "\n	  <td><a href=\"admin.php?action=del_post&id=".$this->article['id']."&security=".$_SESSION['token']."\">[X]</a> ~ <a href=\"admin.php?action=edit_post&id=".$this->article['id']."\">[".$lang['mod']."]</a></td>"
 				. "\n	</tr>";
 		}
 		print " </tbody>\n"
@@ -107,9 +107,11 @@ class Admin extends Security  {
 	 * [url=<url_path>]<url_name>[/url]
 	 * [url]<url_path>[/url]
 	 * [img]<link image>[/img]
+	 * [youtube]<id_code_video>[/youtube]
 	 * [b]<text>[/b]
 	 * [i]<text>[/i]
 	 * [u]<text>[/u]
+	 * [center]<text>[/center]
 	 */
 	
 	public function BBcode($text) {
@@ -143,11 +145,27 @@ class Admin extends Security  {
 		$text = str_replace("[/i]", "</i>", $text);
 		$text = str_replace("[u]", "<u>", $text);
 		$text = str_replace("[/u]", "</u>", $text);
+		$text = str_replace("[center]", "<center>", $text);
+		$text = str_replace("[/center]", "</center>", $text);
 		
- 		$search  = array("/\\[url\\](.*?)\\[\\/url\\]/is", "/\\[url\\=(.*?)\\](.*?)\\[\\/url\\]/is");
-    	$replace = array("<a target=\"_blank\" href=\"$1\">$1</a>", "<a target=\"_blank\" href=\"$1\">$2</a>");
- 	
-    	$text = preg_replace ($search, $replace, $text);
+		//Link BBcode
+ 		$search  = array(
+ 					"/\\[url\\](.*?)\\[\\/url\\]/is", 
+ 					"/\\[url\\=(.*?)\\](.*?)\\[\\/url\\]/is", 
+ 					"/\\[youtube\\](.*?)\\[\\/youtube\\]/is"
+ 				);
+ 				
+    	$replace = array(
+    				"<a target=\"_blank\" href=\"$1\">$1</a>", 
+    				"<a target=\"_blank\" href=\"$1\">$2</a>", 
+    				"<br /><iframe title=\"YouTube video player\" width=\"480\" height=\"390\" src=\"http://www.youtube.com/embed/$1\" frameborder=\"0\" allowfullscreen></iframe>"
+				);
+				
+    	//if(preg_match("#(?:http://)?(?:www.)?youtube.(?:com|it)/(?:watch?v=|v/)(.{11})#i", $text, $parte)) {
+    	//	$id_code_yt = $parte[1];
+    	//}
+    	
+ 		$text = preg_replace ($search, $replace, $text);
 
 		return $text;
 	}
@@ -196,9 +214,11 @@ class Admin extends Security  {
 					* [url= url_path ] url_name [/url]<br />
 					* [url] url_path [/url]<br />
 					* [img] url_img [/img]<br />
+					* [youtube] id_code_video [/youtube] ( http://www.youtube.com/watch?v=<b>8UFIYGkROII</b> ) <br />
 					* [b] text [/b]<br />
 					* [i] text [/i]<br />
 					* [u] text [/u]<br />
+					* [center] text [/center]<br />
 				<br />
     	      	    '.$lang['article'].':<br />
     	      	    <textarea name="article" cols="100" rows="25"></textarea><br /><br />
@@ -266,7 +286,7 @@ class Admin extends Security  {
 	public function del_post($id) {
 	global $lang;
 	
-		$this->id = intval($id);
+		$this->id = (int) $id;
 		
 		print "<h2 align=\"center\">".$lang['title_del_article']."</h2><br />\n";
 		
@@ -277,7 +297,7 @@ class Admin extends Security  {
 				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
 				. "</form>";
 		}else{
-			$this->security_token($_POST['security'], $_SESSION['token']);
+			$this->security_token($_REQUEST['security'], $_SESSION['token']);
 			
 			$this->sql->sendQuery("DELETE FROM ".__PREFIX__."articles WHERE id = '".$this->id."'");
 			$this->sql->sendQuery("DELETE FROM ".__PREFIX__."comments WHERE blog_id = '".$this->id."'");

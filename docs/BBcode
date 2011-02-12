@@ -3,9 +3,11 @@ BBcode:
 [img]<image_path>[/img]
 [url=<url_path>]<url_name>[/url]
 [url]<url_path>[/url]
+[youtube]<id_code_video>[/youtube]
 [b]<text>[/b]
 [i]<text>[/i]
 [u]<text>[/u]
+[center]<text>[/center]
 
 Smile:
 

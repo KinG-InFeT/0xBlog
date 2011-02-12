@@ -29,7 +29,7 @@ print "<big><big>";
 
 if(empty($_GET['text'])) {
 
-	print "\n<br /><br /><br /><br /><b>Search within the blog:</b><br />";
+	print "\n<b>Search within the blog:</b><br />";
 	print "\n<form method=\"GET\" />"
 		. "\n<input type=\"text\" name=\"text\" />"
 		. "\n<input type=\"submit\" value=\"Search\" />"

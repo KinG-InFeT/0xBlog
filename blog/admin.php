@@ -104,10 +104,10 @@ switch($action) {
 	
 	//logout
 	case 'logout':
-		$login->logout(@$_COOKIE['0xBlog_Username'], @$_COOKIE['0xBlog_Password']);
+		$login->logout(@$_COOKIE['0xBlog_Username'], @$_COOKIE['0xBlog_Password'], @$_GET['security']);
 	break;
 	
-	//print all articles for manage
+	//print all articles for management
 	default:
 		$admin->show_administration();
 	break;

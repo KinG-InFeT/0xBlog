@@ -27,7 +27,7 @@ include("lib/security.class.php");
 
 class Core extends Security {
 	
-	const VERSION = '3.1.0';
+	const VERSION = '3.1.1';
 
 	public function __construct () {
 	
@@ -85,6 +85,11 @@ class Core extends Security {
 				document.addcomment.captcha.focus();
 				return false;
 			}
+		}
+		function reload_captcha(hash) {
+			var rnd = String(Math.random()); // Anti-cache-loading
+			span = document.getElementById('captcha');
+			span.innerHTML = '<img src="lib/captcha.php?hash=' + hash + '&rnd=' + rnd + '">';
 		}
 		</script>
 		</head>
@@ -164,10 +169,10 @@ class Core extends Security {
 			//$tmp = str_replace("\n","<br />",$tmp);
 			
 			//estraggo l'email dell'autore dell'articolo
-			$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".$this->articles['author']."'"));
+			$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".mysql_real_escape_string($this->articles['author'])."'"));
 			
 			//estraggo il nome della categoria
-			$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".$this->articles['cat_id']));
+			$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".mysql_real_escape_string($this->articles['cat_id'])));
 
 			//BBcode
 			include_once("lib/admin.class.php");
@@ -232,10 +237,10 @@ class Core extends Security {
 		$this->sql->sendQuery("UPDATE ".__PREFIX__."articles SET num_read = '".$this->num_read."' WHERE id = '".$this->id."'");
 		
 		//estraggo l'email dell'autore dell'articolo
-		$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".$this->post['author']."'"));
+		$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".mysql_real_escape_string($this->post['author'])."'"));
 		
 		//estraggo il nome della categoria
-		$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".$this->post['cat_id']));
+		$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".mysql_real_escape_string($this->post['cat_id'])));
 		
 		//BBcode
 		include_once("lib/admin.class.php");
@@ -249,12 +254,26 @@ class Core extends Security {
 		
 		//form per aggiungere un commento
 		if(@$_GET['action'] == 'comment') {
+			$code = NULL;
+
+			for ($i = 0; $i < 3; $i++)
+				$code .= chr (rand (65,90));
+		
+			for ($i = 0; $i < 4; $i++)
+				$code .= rand (0,9);
+		
+			$_SESSION['captcha'] = $code;
+
+			$hash = md5 (rand (0,9999999));
+
+			$_SESSION['hash'] = $hash;
+			
 			print "\n<br />"
 				. "\n<form name=\"addcomment\" action=\"viewpost.php?id=".$this->id."&action=send_comment\" method=\"POST\" onSubmit=\"return check();\">"
 				. "\n<b>".$lang['name'].":</b><br /><input type=\"text\" name=\"name\" /><br /><br />"
 				. "\n<b>".$lang['commit'].":</b><br /><textarea name=\"comment\" cols=\"30\" rows=\"2\"></textarea><br /><br />"
-				. "\n<img src=\"lib/captcha.php\"><br />"
-				. "\n".$lang['add_captcha_code'].":<font size=\"1\">(Case-Sensitive)</font><br />"
+				. "\n<span id=\"captcha\"><img src=\"lib/captcha.php?hash=".$hash."&rnd=".rand(0,9999)."\" /></span> - <a href=\"javascript:reload_captcha('".$hash."');\">Reload Captcha</a><br /><br />"
+				. "\n".$lang['add_captcha_code'].":<br />"
 				. "\n<input type=\"text\" name=\"captcha\" id=\"captcha\"><br /><br />"
 				. "\n<input type=\"submit\" value=\"".$lang['send']."\"  />"
 				. "\n</form>";
@@ -322,7 +341,7 @@ class Core extends Security {
 				. "\n      <li><a href=\"admin.php?action=themes\">".$lang['theme_admin']."</a></li>"				
 				. "\n      <li><a href=\"admin.php?action=updates\">".$lang['update']."</a></li>"				
 				. "\n      <li><hr /></li>"								
-				. "\n      <li><a href=\"admin.php?action=logout\">Logout</a></li>"																												
+				. "\n      <li><a href=\"admin.php?action=logout&security=".$_SESSION['token']."\">Logout</a></li>"																												
 				. "\n    </ul>"
 				. "\n  </div>"
 				. "\n<!-- Admin menu -->";
@@ -439,13 +458,13 @@ class Core extends Security {
 		
 		$this->config = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
 		
-		$total  = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".$this->cat_id."' ORDER by id DESC"));
+		$total  = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".(int) $this->cat_id."' ORDER by id DESC"));
 		$pager 	= $this->Pagination($total, $this->config['limit'], $page);
 		$offset = $pager['offset'];
 		$limit 	= $pager['limit'];
 		$page 	= $pager['page'];
 		
-		$this->blog = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".$this->cat_id."' ORDER by id DESC LIMIT ".$limit." OFFSET ".$offset);
+		$this->blog = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".(int) $this->cat_id."' ORDER by id DESC LIMIT ".$limit." OFFSET ".$offset);
 	
 		print "\n<div id=\"wrapper\">"
 		    . "\n<div id=\"content\">\n";
@@ -455,7 +474,7 @@ class Core extends Security {
 	    	
 		while($this->articles = mysql_fetch_array($this->blog)) {
 		
-			$this->comments = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."comments WHERE blog_id = '".$this->articles['id']."'"));
+			$this->comments = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."comments WHERE blog_id = '".(int) $this->articles['id']."'"));
 			
 			$tmp = NULL;
 		
@@ -467,14 +486,12 @@ class Core extends Security {
 		 	
 			for ($i = 0 ; $i < $len ; $i++)
 				$tmp .= $this->articles['post'][$i];
-				
-			//$tmp = str_replace("\n","<br />",$tmp);
 			
 			//estraggo l'email dell'autore dell'articolo
-			$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".$this->articles['author']."'"));
+			$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".mysql_real_escape_string($this->articles['author'])."'"));
 			
 			//estraggo il nome della categoria
-			$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".$this->articles['cat_id']));
+			$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".mysql_real_escape_string($this->articles['cat_id'])));
 
 			//BBcode
 			include_once("lib/admin.class.php");
@@ -495,9 +512,9 @@ class Core extends Security {
 			for ($i = 1; $i <= $pager['numPages']; $i++) {  
 		
 				if ($i < $pager['numPages']) 
-					print " <a href=\"index.php?mode=".$_GET['mode']."&cat_id=".$_GET['cat_id']."&page=".$i."\">[".$i."]</a> -";
+					print " <a href=\"index.php?mode=".htmlspecialchars($_GET['mode'])."&cat_id=".htmlspecialchars($_GET['cat_id'])."&page=".$i."\">[".$i."]</a> -";
 				else
-					print " <a href=\"index.php?mode=".$_GET['mode']."&cat_id=".$_GET['cat_id']."&page=".$i."\">[".$i."]</a>";
+					print " <a href=\"index.php?mode=".htmlspecialchars($_GET['mode'])."&cat_id=".htmlspecialchars($_GET['cat_id'])."&page=".$i."\">[".$i."]</a>";
 			}
 			print "\n</p>";
 		}
