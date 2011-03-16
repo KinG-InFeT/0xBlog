@@ -158,7 +158,7 @@ if (   !empty( $_POST['username'] )
 	  `password` text NOT NULL,
 	  `email` text NOT NULL,
 	  KEY `id` (`id`)
-	) TYPE=MyISAM AUTO_INCREMENT=1 ;") or die(mysql_error());
+	);") or die(mysql_error());
 	
 	echo "Table <b>'".$prefix."users'</b> created with success<br />\n";
 	
@@ -175,7 +175,7 @@ if (   !empty( $_POST['username'] )
 	  `lang` text NOT NULL,
 	  `limit` INT NOT NULL,
 	  `footer` text NOT NULL 
-	) TYPE=MyISAM AUTO_INCREMENT=1 ;") or die(mysql_error());
+	);") or die(mysql_error());
 	
 	echo "Table <b>'".$prefix."config'</b> created with success<br />\n";
 	
@@ -193,7 +193,7 @@ if (   !empty( $_POST['username'] )
 	  `num_read` INT NOT NULL,
   	  `cat_id` INT NOT NULL,
 	  KEY `id` (`id`)
-	) TYPE=MyISAM AUTO_INCREMENT=1 ;") or die(mysql_error());
+	);") or die(mysql_error());
 	
 		echo "Table <b>'".$prefix."articles'</b> created with success<br />\n";
 		
@@ -203,8 +203,9 @@ if (   !empty( $_POST['username'] )
 	  `blog_id` int(11) NOT NULL default '0',
 	  `name` text NOT NULL,
 	  `comment` text NOT NULL,
+	  `ip` text NOT NULL,
 	  KEY `id` (`id`)
-	) TYPE=MyISAM AUTO_INCREMENT=1 ;") or die(mysql_error());
+	);") or die(mysql_error());
 	
 	echo "Table <b>'".$prefix."comments'</b> created with success<br />\n";
 	
@@ -212,7 +213,7 @@ if (   !empty( $_POST['username'] )
 					`cat_id` int( 11 ) NOT NULL AUTO_INCREMENT,
 					`cat_name` text NOT NULL ,
 				KEY `cat_id` ( `cat_id` )
-				) TYPE = MYISAM AUTO_INCREMENT = 1;") or die(mysql_error());
+				);") or die(mysql_error());
 	
 	echo "Table <b>'".$prefix."categories'</b> created with success<br />\n";
 	

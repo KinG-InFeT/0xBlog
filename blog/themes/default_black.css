@@ -4,6 +4,8 @@ html,body {
 }
 
 body {
+    background-color: #000000;
+    color: #FFFFFF;
 	font: 76% arial,sans-serif;
 	text-align:center;
 }
@@ -15,7 +17,7 @@ p {
 a {
 	padding:5px;
 	text-decoration:none;
-	color:#000000;
+	color:#FFFFFF;
 }
 
 td, input {
@@ -29,7 +31,7 @@ div#list_art_most_read {
 }
 		
 div#header {
-	border: 1px dotted black;
+	border: 1px dotted white;
 }
 		
 div#header h1 {
@@ -48,7 +50,7 @@ div#content p {
 }
 
 div#navigation {
-    border: 1px dotted black;
+    border: 1px dotted white;
 }
 
 div#navigation ul {
@@ -63,11 +65,11 @@ div#navigation li {
 
 div#extra {
 	width: 780px;
-	border: 1px dotted black;
+	border: 1px dotted white;
 }
 
 div#footer {
-	border: 1px dotted black;
+	border: 1px dotted white;
 }
 div#footer p {
 	margin:0;
@@ -77,31 +79,31 @@ div#footer p {
 div#container {
 	width:950px;
 	margin:0 auto;
-	border: 1px dotted black;
+	border: 1px dotted white;
 }
 		
 div#content {
 	float:right;
 	width:735px;
-	border: 1px dotted black;
+	border: 1px dotted white;
 }
 		
 div#navigation {
 	float:left;
 	width:200px;
 	padding:5px;
-	border: 1px dotted black;
+	border: 1px dotted white;
 }
 
 div#extra { 
 	float:left;
 	clear:left;
 	width:200px;
-	border: 1px dotted black;
+	border: 1px dotted white;
 }
 
 div#footer {
 	clear:both;
 	width:100%;
-	border: 1px dotted black;
+	border: 1px dotted white;
 }

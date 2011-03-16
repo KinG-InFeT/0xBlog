@@ -1,4 +1,13 @@
-				CHANGELOG FILE
+                        CHANGELOG FILE
+
+v3.2.0
+    [!FIX] Fix editing CSS themes (Thanks MarioStyle)
+    [!FIX] Minor Bug fix in SQL installation
+    [FIX] Fixati i layout che sfasavano con una risoluzione più piccola
+    [ADDED] Aggiunto un tema opposto a quello di default (default_black)
+    [!ADDED] Aggiunto anche l'IP di chi commenta e memorizzato in DB
+    [CHANGE] Reso il Captcha case-insensitive
+    [CHANGE] Cambiato il layout di base e reso totalmente light quindi veloce, leggero e performante    
 				
 v3.1.1
 	[!FIX] Fix XSS in cat_id and mode GET variable in viewtopic.php #bug 10 (Thanks gabry9191)

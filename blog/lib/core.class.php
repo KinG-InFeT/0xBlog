@@ -27,7 +27,7 @@ include("lib/security.class.php");
 
 class Core extends Security {
 	
-	const VERSION = '3.1.1';
+	const VERSION = '3.2.0';
 
 	public function __construct () {
 	
@@ -278,8 +278,8 @@ class Core extends Security {
 				. "\n<input type=\"submit\" value=\"".$lang['send']."\"  />"
 				. "\n</form>";
 		}elseif(@$_GET['action'] == 'send_comment') {//aggiunta reale del commento
-				$key_generate     = $_SESSION['captcha'];
-				$captcha          = $_POST['captcha'];
+				$key_generate     = strtoupper($_SESSION['captcha']);
+				$captcha          = strtoupper($_POST['captcha']);
 
 				if($captcha != $key_generate)
 					die( "<script>alert(\"".$lang['no_match_captcha']."\"); window.location=\"viewpost.php?id=".$this->id."&action=comment\";</script>");
@@ -292,9 +292,10 @@ class Core extends Security {
 	
 				$commento = $this->VarProtect( $_POST['comment'] );
 				$name     = $this->VarProtect( $_POST['name']    );
+				$ip       = $_SERVER['REMOTE_ADDR'];
 				
 				//eseguo query di isnerimento
-				$this->sql->sendQuery("INSERT INTO ".__PREFIX__."comments (blog_id, name, comment) VALUES ('".$this->id."', '{$name}', '{$commento}')");
+				$this->sql->sendQuery("INSERT INTO ".__PREFIX__."comments (blog_id, name, comment, ip) VALUES ('".$this->id."', '{$name}', '{$commento}', '{$ip}')");
 				header("Location: viewpost.php?id=".$this->id);
 			}
 

@@ -240,7 +240,7 @@ class Admin extends Security  {
 		
 		print "<h2 align=\"center\">".$lang['title_comments']."</h2><br />\n";
 		
-		$this->comments = $this->sql->sendQuery("SELECT id, blog_id, name, comment FROM ".__PREFIX__."comments WHERE blog_id = '".$this->id."'");
+		$this->comments = $this->sql->sendQuery("SELECT id, blog_id, name, comment, ip FROM ".__PREFIX__."comments WHERE blog_id = '".$this->id."'");
 		
 		if(mysql_num_rows($this->comments) < 1) {
 			print "<p><b>".$lang['no_comment']."</b></p>";
@@ -250,6 +250,7 @@ class Admin extends Security  {
 				<tr>
 				  <td><center>'.$lang['name'].'</center></td>
 				  <td><center>'.$lang['commit'].'</center></td>
+				  <td><center>IP</center></td>
 				  <td><center>[#]</center></td>
 				</tr>';	
 				
@@ -258,6 +259,7 @@ class Admin extends Security  {
 				print "\n<tr>"
 					  . "\n<td>".htmlspecialchars($this->comment['name'])."</td>"
 					  . "\n<td>".htmlspecialchars($this->comment['comment'])."</td>"
+					  . "\n<td>".$this->comment['ip']."</td>"
 					  . "\n<td><input type='submit' value='".$lang['delete']."'/></td>"
 					. "\n</tr>";
 				print "\n<input type='hidden' name='id' value='".(int) $this->comment['id']."'>";
@@ -629,7 +631,7 @@ class Admin extends Security  {
 			fwrite($scrivi_file,htmlspecialchars(stripslashes($_POST['theme_file']))) or die("Error writing file:".$this->theme_name);
 			fclose($scrivi_file);
 				
-			print "<script>alert(\"".$lang['theme_edited']."\"); window.location.href = 'admin.php?action=edit_theme';</script>";
+			print "<script>alert(\"".$lang['theme_edited']."\"); window.location.href = 'admin.php?action=themes';</script>";
 
 		}else{
 
@@ -639,12 +641,12 @@ class Admin extends Security  {
 			$this->theme_file = fread($leggi_file,$dim_file);
 			
 			fclose($leggi_file);
-
+			
 			print "\n<form method=\"POST\" action=\"admin.php?action=edit_theme\" />"
 				. "\n<p align=\"center\">Theme File:<br />"
 				. "\n<textarea name=\"theme_file\" rows=\"25\" cols=\"100\">".$this->theme_file."</textarea><br />"
 				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
-				. "\n<input type=\"hidden\" name=\"theme_name\" value=\"".$this->theme_name."\" />"
+				. "\n<input type=\"hidden\" name=\"theme_name\" value=\"".htmlspecialchars($theme_name)."\" />"
 				. "\n<input type=\"hidden\" name=\"send\" value=\"1\" />"
 				. "\n<input type=\"submit\" value=\"".$lang['send_edit']."\" /></p>"
 				. "\n</form>"

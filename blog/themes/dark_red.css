@@ -114,8 +114,7 @@ img {
 }
 
 div#container {
-	min-width: 820px;
-	max-width: 1260px;
+	width: 950px;
 	margin: 10px auto;
 	color: gray;
 	text-align:left;	
@@ -123,7 +122,7 @@ div#container {
 	
 div#content {
 	float:right;
-	width:990px;
+	width:680px;
 	border: 1px dotted red;
 	color: gray;
 	padding:15px;

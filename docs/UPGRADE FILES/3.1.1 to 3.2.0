@@ -1,0 +1,21 @@
+ITA
+
+Per aggiornare la versione di 0xBlog 3.1.1 alla versione 3.2.0 seguire questi semplici passi:
+
+1) Cancellare ogni file dalla vostra root di 0xBlog tranne il file config.php
+2) Uppare tutti i file della nuova versione 3.2.0 nella root di 0xBlog tranne install.php e config.php
+3) Uppare il file per l'aggiornamento del database upgrade_v3_1_1_to_3_2_0.php nella root di 0xBlog
+4) Avviare il file per al'aggiornamento upgrade_v3_0_x_to_3_1_0.php e cliccare su "Upgrade"
+5) Eliminare il file upgrade_v3_1_1_to_3_2_0.php dopo l'aggiornamento
+6) Godetevi la nuova versione di 0xBlog.
+
+ENG
+
+To update the version 3.1.1 to version 3.2.0 0xBlog follow these simple steps:
+
+1) Delete all files from the root of your 0xBlog except the config.php file
+2) upload all files in the root of the new version 3.2.0 of 0xBlog except install.php and config.php
+3) upload the file to update the database in the root of upgrade_v3_1_1_to_3_2_0.php 0xBlog
+4) Start the file to al'aggiornamento upgrade_v3_1_1_to_3_2_0.php and click "Upgrade"
+5) Delete the file after the upgrade upgrade_v3_1_1_to_3_2_0.php
+6) Enjoy the new version of 0xBlog.
