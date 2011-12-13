@@ -7,7 +7,7 @@
  *
  * @file login.class.php
  *
- * @link http://0xproject.hellospace.net#0xBlog
+ * @link http://0xproject.netsons.org#0xBlog
  *
  */
  
@@ -25,17 +25,6 @@ class Login extends Security {
 			include_once ("mysql.class.php");
 			
 			$this->sql = new MySQL ($db_host, $db_user, $db_pass, $db_name);
-	}
-	
-	public function VarProtect ($content) {
-		if (is_array ($content)) {
-			foreach ($content as $key => $val)
-				$content[$key] = mysql_real_escape_string (htmlentities (stripslashes ($content[$key])));
-		}else{
-			$content = mysql_real_escape_string (htmlentities ($content));
-		}
-	
-		return (get_magic_quotes_gpc () ? stripslashes ($content) : $content);
 	}
 	
 	public function is_admin($user, $pass) {

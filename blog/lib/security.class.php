@@ -7,12 +7,27 @@
  *
  * @file security.class.php
  *
- * @link http://0xproject.hellospace.net#0xBlog
+ * @link http://0xproject.netsons.org#0xBlog
  *
  */
  
 class Security {
 
+	public function VarProtect ($content) {
+	
+		$this->content = stripslashes ($content);
+		
+		if (is_array ($this->content)) {
+			foreach ($this->content as $key => $val)
+				$this->content[$key] = mysql_real_escape_string (htmlspecialchars ($this->content[$key]));
+		}else{
+			$this->content = mysql_real_escape_string (htmlspecialchars ($this->content));
+		}
+	
+		//return (get_magic_quotes_gpc () ? stripslashes ($this->content) : $this->content);
+		return $this->content;
+	}
+	
 	public function generate_token () {
 	
 		$this->token = md5(rand(1,999999));

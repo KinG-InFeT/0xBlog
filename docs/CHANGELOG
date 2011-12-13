@@ -1,5 +1,10 @@
                         CHANGELOG FILE
 
+v3.2.1
+    [FIX] Fix all CSS themes
+    [FIX] Minor bug fix
+    [CHANGE] Sostituzione di tutti i link hellospace.net
+
 v3.2.0
     [!FIX] Fix editing CSS themes (Thanks MarioStyle)
     [!FIX] Minor Bug fix in SQL installation

@@ -7,7 +7,7 @@
  *
  * @file captcha.php
  *
- * @link http://0xproject.hellospace.net#0xBlog
+ * @link http://0xproject.netsons.org#0xBlog
  *
  */
 
@@ -61,5 +61,4 @@ for($i = 0; $i < 80; $i++) {
 imagepng ($im);
 
 imagedestroy ($im);
-?>
 ?>

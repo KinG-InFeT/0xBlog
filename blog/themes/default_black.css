@@ -26,8 +26,8 @@ td, input {
 }
 
 div#list_art_most_read {
-	margin:15px 0; 
-	padding:1;
+	margin:15px 0px; 
+	padding:1px;
 }
 		
 div#header {
@@ -79,13 +79,15 @@ div#footer p {
 div#container {
 	width:950px;
 	margin:0 auto;
-	border: 1px dotted white;
 }
 		
 div#content {
-	float:right;
-	width:735px;
+	float: right;
+	clear: right;
+	width:700px;
 	border: 1px dotted white;
+	color: gray;
+	padding:15px;
 }
 		
 div#navigation {
@@ -98,8 +100,9 @@ div#navigation {
 div#extra { 
 	float:left;
 	clear:left;
-	width:200px;
-	border: 1px dotted white;
+	width:189px;
+	padding: 10px;
+    border: 1px dotted white;
 }
 
 div#footer {

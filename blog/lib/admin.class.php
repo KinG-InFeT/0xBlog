@@ -7,7 +7,7 @@
  *
  * @file admin.class.php
  *
- * @link http://0xproject.hellospace.net#0xBlog
+ * @link http://0xproject.netsons.org#0xBlog
  *
  */
  
@@ -25,21 +25,6 @@ class Admin extends Security  {
 			include_once ("mysql.class.php");
 			
 			$this->sql = new MySQL ($db_host, $db_user, $db_pass, $db_name);
-	}
-	
-	public function VarProtect ($content) {
-	
-		$this->content = stripslashes ($content);
-		
-		if (is_array ($this->content)) {
-			foreach ($this->content as $key => $val)
-				$this->content[$key] = mysql_real_escape_string (htmlspecialchars ($this->content[$key]));
-		}else{
-			$this->content = mysql_real_escape_string (htmlspecialchars ($this->content));
-		}
-	
-		//return (get_magic_quotes_gpc () ? stripslashes ($this->content) : $this->content);
-		return $this->content;
 	}
 
 	public function valid_mail($mail) {
@@ -551,9 +536,9 @@ class Admin extends Security  {
 		
 		$update = NULL;
 		
-		if ($fsock = @fsockopen('www.0xproject.hellospace.net', 80, $errno, $errstr, 10)) {
+		if ($fsock = @fsockopen('www.0xproject.netsons.org', 80, $errno, $errstr, 10)) {
 			@fputs($fsock, "GET /versions/0xBlog.txt HTTP/1.1\r\n");
-			@fputs($fsock, "HOST: www.0xproject.hellospace.net\r\n");
+			@fputs($fsock, "HOST: www.0xproject.netsons.org\r\n");
 			@fputs($fsock, "Connection: close\r\n\r\n");
 	
 			$get_info = FALSE;
@@ -577,7 +562,7 @@ class Admin extends Security  {
 				$version_info = "<p style=\"color:green\">".$lang['update_1'].".</p><br />";
 			else
 				$version_info = "\n<p style=\"color:red\">".$lang['update_2'].".<br />\n".$lang['update_3'].": ". $update."\n"
-							  . "<br /><br />Link Download: <a href=\"http://0xproject.hellospace.net/#0xBlog\">".$lang['update_4']."</a><br />\n";
+							  . "<br /><br />Link Download: <a href=\"http://0xproject.netsons.org/#0xBlog\">".$lang['update_4']."</a><br />\n";
 		}else{
 			if ($errstr)
 				$version_info = '<p style="color:red">' . sprintf("".$lang['update_5'].":<br />%s", $errstr) . '</p>';

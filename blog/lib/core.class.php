@@ -7,7 +7,7 @@
  *
  * @file core.class.php
  *
- * @link http://0xproject.hellospace.net#0xBlog
+ * @link http://0xproject.netsons.org#0xBlog
  *
  */
 ob_start();
@@ -27,7 +27,7 @@ include("lib/security.class.php");
 
 class Core extends Security {
 	
-	const VERSION = '3.2.0';
+	const VERSION = '3.2.1';
 
 	public function __construct () {
 	
@@ -35,21 +35,6 @@ class Core extends Security {
 			include_once ("mysql.class.php");
 			
 			$this->sql = new MySQL ($db_host, $db_user, $db_pass, $db_name);
-	}
-	
-	public function VarProtect ($content) {
-	
-		$this->content = stripslashes ($content);
-		
-		if (is_array ($this->content)) {
-			foreach ($this->content as $key => $val)
-				$this->content[$key] = mysql_real_escape_string (htmlspecialchars ($this->content[$key]));
-		}else{
-			$this->content = mysql_real_escape_string (htmlspecialchars ($this->content));
-		}
-	
-		//return (get_magic_quotes_gpc () ? stripslashes ($this->content) : $this->content);
-		return $this->content;
 	}
 	
 	public function show_header($title) {
@@ -65,7 +50,7 @@ class Core extends Security {
 		<title><?php print $this->title; ?> ~ Blog</title>
 		<META http-equiv="content-type" content="text/html; charset=iso-8859-1">
 		<META NAME="GENERATOR" CONTENT="VIM ~ The Linux Free Editor">
-		<META NAME="AUTHOR"    CONTENT="KinG-InFeT ~ http://0xproject.hellospace.net/">
+		<META NAME="AUTHOR"    CONTENT="KinG-InFeT ~ http://0xproject.netsons.org/">
 		<?php 
 		if(file_exists("themes/".$this->config['themes']))
 			print "<link rel = 'stylesheet' type = 'text/css' href = 'themes/".$this->config['themes']."'>\n"; 
@@ -372,7 +357,7 @@ class Core extends Security {
 			print "\n</ul>"
 				. "\n</div>"
 				. "\n<div id=\"list_art_most_read\">"
-				. "\n<hr />"
+				. "\n<br />"
 				. "\n  <div id=\"extra\">"
 				. "\n <p><strong>".$lang['most_read']."</strong></p>"
 				. "\n<ol>";
@@ -396,7 +381,7 @@ class Core extends Security {
 		print "\n<!-- footer -->"
 			. "\n <div id=\"footer\">"
 			. "\n\t<p align=\"left\" style=\"float: left;\">".$this->config['footer']."</p>"			
-			. "\n\t<p align=\"right\">Powered By <a href=\"http://0xproject.hellospace.net/#0xBlog\"><u><i>0xBlog</i></u></a> v ".Core::VERSION."</p>"
+			. "\n\t<p align=\"right\">Powered By <a href=\"http://0xproject.netsons.org/#0xBlog\"><u><i>0xBlog</i></u></a> v ".Core::VERSION."</p>"
 			. "\n</div>"
 			. "\n<!-- fine footer -->"
 			. "\n</div>"

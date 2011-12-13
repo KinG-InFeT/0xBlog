@@ -7,7 +7,7 @@
  *
  * @file admin.php
  *
- * @link http://0xproject.hellospace.net#0xBlog
+ * @link http://0xproject.netsons.org#0xBlog
  *
  */
 ob_start();

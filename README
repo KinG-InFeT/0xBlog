@@ -27,6 +27,6 @@ Per sapere come effettuare l'upgrade del CMS visionare la cartella UPGRADE FILES
 all'interno troverete tutti i documenti riguardanti l'aggiornamento per ogni versione dalla 2.5 in sù.
 
 #Requisiti
-PHP >= 5
+PHP >= 5.2.0
 MySQL >= 5
 

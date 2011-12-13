@@ -7,7 +7,7 @@
  *
  * @file install.php
  *
- * @link http://0xproject.hellospace.net#0xBlog
+ * @link http://0xproject.netsons.org#0xBlog
  *
  */
 
@@ -26,7 +26,7 @@ if(!(is_writable('./config.php')))
 		 Settare i permessi a 777 (chmod)</b>\n");
 		 
 if(!(phpversion() >= '5.2.0')) {
-	die('PHP version is: '.phpversion().' ERROR! Upgrade to last version > 5');
+	die('PHP version is: '.phpversion().' ERROR! Upgrade to last version > 5.2.0');
 }
 		 
 include("config.php");
@@ -231,7 +231,7 @@ if (   !empty( $_POST['username'] )
  *
  * @file config.php
  *
- * @link http://0xproject.hellospace.net#0xBlog
+ * @link http://0xproject.netsons.org#0xBlog
  *
  */
 @define("__INSTALLED__", 1);
@@ -352,6 +352,6 @@ $db_name = "'.$name.'";
 ?>
 <br />
 <br />
-<div align="center"><font color="grey"><i>Powered By <a href="http://0xproject.hellospace.net/#0xBlog">0xBlog</a></i></font></div>
+<div align="center"><font color="grey"><i>Powered By <a href="http://0xproject.netsons.org/#0xBlog">0xBlog</a></i></font></div>
 </body>
 </html>

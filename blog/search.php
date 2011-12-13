@@ -7,7 +7,7 @@
  *
  * @file search.php
  *
- * @link http://0xproject.hellospace.net#0xBlog
+ * @link http://0xproject.netsons.org#0xBlog
  *
  */
 
@@ -22,15 +22,12 @@ $template->show_header($title = 'Search');
 
 $template->show_menu($class = NULL);
 
-print "\n<div id=\"wrapper\">"
-    . "\n<div id=\"content\">";
-
-print "<big><big>";
+print "\n\t<div id=\"content\">";
 
 if(empty($_GET['text'])) {
 
-	print "\n<b>Search within the blog:</b><br />";
-	print "\n<form method=\"GET\" />"
+	print "\n<strong>Search within the blog:</strong><br />"
+	    . "\n<form method=\"GET\" action=\"\"/>"
 		. "\n<input type=\"text\" name=\"text\" />"
 		. "\n<input type=\"submit\" value=\"Search\" />"
 		. "\n</form>";
@@ -38,10 +35,7 @@ if(empty($_GET['text'])) {
 	$template->search(@$_GET['text']);
 }
 
-print "</big></big>";
-
-print "\n</div>"
-    . "\n</div>";
+print "\n\t</div>";
     
 $template->show_footer();
 
