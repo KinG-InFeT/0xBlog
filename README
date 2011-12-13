@@ -2,9 +2,9 @@
 
 Powered By KinG-InFeT ~ http://www.kinginfet.net/
 
-Link Project: http://0xproject.hellospace.net/#0xBlog
+Link Project: http://0xproject.netsons.org/#0xBlog
 
-Bug-Tracker: http://0xproject.hellospace.net/bug_tracker/
+Bug-Tracker: http://0xproject.netsons.org/bug_tracker/
 
 #ISTRUZIONI DI INSTALLAZIONE
 
@@ -19,14 +19,14 @@ N.B: Per visualizzare esattamente le modifiche apportate al progetto versione pe
 #Aggiungere un Tema
 
 Per aggiungere un tema basta semplicemente uplodare il file css creato nella directory themes
-e successivamente andarlo a selezionare dall'amministrazione
+e successivamente attivarlo e selezionarlo dall'amministrazione
 
-#Per l'upgrade di versione
+#Upgrade di versione
 
 Per sapere come effettuare l'upgrade del CMS visionare la cartella UPGRADE FILES che si trova all'interno di docs,
 all'interno troverete tutti i documenti riguardanti l'aggiornamento per ogni versione dalla 2.5 in sù.
 
-#ATTENZIONE !!!
-Il CMS è basato su piattaforma con PHP versione > 5 
-Per altervista basta inserire tutti i file in una cartella chiamata php5 ;) o settarla dal pannello di Controllo
-e attivare il PHP5
+#Requisiti
+PHP >= 5
+MySQL >= 5
+
