@@ -558,7 +558,7 @@ class Admin extends Security  {
 			$update1  = str_replace(".", "", $update);
 			$version1 = str_replace(".", "", $version);
 	
-			if ($version1 <= $update1)
+			if ($version1 >= $update1)
 				$version_info = "<p style=\"color:green\">".$lang['update_1'].".</p><br />";
 			else
 				$version_info = "\n<p style=\"color:red\">".$lang['update_2'].".<br />\n".$lang['update_3'].": ". $update."\n"
@@ -613,7 +613,7 @@ class Admin extends Security  {
 			$this->security_token($_POST['security'], $_SESSION['token']);
 
 			$scrivi_file = fopen($this->theme_name,"w");
-			fwrite($scrivi_file,htmlspecialchars(stripslashes($_POST['theme_file']))) or die("Error writing file:".$this->theme_name);
+			fwrite($scrivi_file,htmlspecialchars(stripslashes($_POST['theme_file']))) or die("Error writing file:" . $this->theme_name);
 			fclose($scrivi_file);
 				
 			print "<script>alert(\"".$lang['theme_edited']."\"); window.location.href = 'admin.php?action=themes';</script>";

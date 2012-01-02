@@ -101,13 +101,13 @@ class Login extends Security {
 				die(  "\n <fieldset>"
 		   			. "\n<legend>Login</legend>"
 					. "\n     <br /><p align=\"center\">"
-					. "\n     <FORM action=\"admin.php\" method=\"POST\" name=\"0xBlog_Login\">"
+					. "\n     <form action=\"admin.php\" method=\"POST\" name=\"0xBlog_Login\">"
 					. "\n     Username :"
-					. "\n     <INPUT type=\"text\" name=\"user\" Style=\"Color: #0044FF\"><br />"
+					. "\n     <input type=\"text\" name=\"user\" Style=\"Color: #0044FF\"><br />"
 					. "\n     Password :"
-					. "\n     <INPUT type=\"password\" name=\"pass\" Style=\"Color: #0044FF; Font-Size: 11\"><br /><br />"
-					. "\n     <INPUT type=\"submit\" value=\"Login\"> </p>"
-					. "\n     </FORM><br />"
+					. "\n     <input type=\"password\" name=\"pass\" Style=\"Color: #0044FF; Font-Size: 11\"><br /><br />"
+					. "\n     <input type=\"submit\" value=\"Login\"> </p>"
+					. "\n     </form><br />"
 					. "\n </fieldset>"
 					. "\n</div>");
 			}

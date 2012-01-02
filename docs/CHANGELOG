@@ -1,5 +1,8 @@
                         CHANGELOG FILE
 
+v3.2.2 ![STABLE RELEASE]!
+    [!FIX] Fix check_update() function [HOT]
+
 v3.2.1
     [FIX] Fix all CSS themes
     [FIX] Minor bug fix
