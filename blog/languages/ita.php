@@ -27,6 +27,7 @@ $lang['email_not_valide']  = 'Errore! La mail non &egrave; valida';
 $lang['theme_not_found']   = 'Errore! Tema non trovato';
 $lang['login_1']           = 'Errore! Username o Password non corrette';
 $lang['error_search']      = 'Errore! Inserire una stringa per la ricerca';
+$lang['ext_not_validate']  = "Errore! Estenzione file non valido";
 
 //messaggi di conferma
 $lang['add_article_success'] = 'Articolo aggiunto con successo';

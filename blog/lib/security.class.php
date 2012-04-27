@@ -41,15 +41,17 @@ class Security {
 		$this->token    = $token;
 	
 		if($this->security != $this->token)
-			die("<h1 align=\"center\">CSRF Attack Attemp!</h1>");
-	
+			die("<div id=\"error\"><h2 align=\"center\">CSRF Attack Attemp!</h2></div>");	
 	}
 	
 	public function my_is_numeric($text) {
-		
 		if(preg_match("/^[0-9]+$/",$text) == FALSE)
-			die("<h1 align=\"center\">Hacking Attemp!</h1>");
-		
+			die("<div id=\"error\"><h2 align=\"center\">Hacking Attemp!</h2></div>");
+	}
+	
+	public function check_extension($file_name) {
+		$ext = explode( ".", $file_name);
+		return strtolower( $ext[ count( $ext ) - 1 ] );
 	}
 }
 ?>

@@ -36,7 +36,7 @@ class Login extends Security {
 		
 		while ($ris = mysql_fetch_array ($query)) {
 		
-			if ($this->username == $ris['username'] && $this->password == $ris['password'])
+			if (strtolower($this->username) == strtolower($ris['username']) && $this->password == $ris['password'])
 				return TRUE;
 			else
 				return FALSE;
@@ -52,7 +52,7 @@ class Login extends Security {
 		
 		while ($this->user = mysql_fetch_array ($this->login)) {
 		
-			if ($this->username == $this->user['username'] && $this->password == $this->user['password']) {			
+			if (strtolower($this->username) == strtolower($this->user['username']) && $this->password == $this->user['password']) {			
 			
 				setcookie ("0xBlog_Username", $this->username, time () + (3600 * 24), "/");
 				setcookie ("0xBlog_Password", $this->password, time () + (3600 * 24), "/");

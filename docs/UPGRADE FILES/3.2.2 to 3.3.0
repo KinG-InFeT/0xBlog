@@ -1,0 +1,22 @@
+ITA
+
+Per avanzare dalla versione 3.2.2 alla versione 3.3.0 seguire questi semplici passaggi:
+
+1) Cancellare tutti i file all'interno della vostra root riguardanti 0xBlog tranne il file config.php
+2) Uplodare tutti i nuovi file della versione 3.3.0 tranne: config.php e install.php
+3) Uplodare il file upgrade_3_2_2_to_3_3_0.php nella root del vostro 0xBlog (dove è situato il file config.php)
+4) Aprire il file upgrade_3_2_2_to_3_3_0.php ed eseguire le indicazioni
+5) Una volta finito cancellare il file upgrade_3_2_2_to_3_3_0.php
+6) Fine :D
+
+
+ENG
+
+To move forward from version 3.2.2 version 3.3.0 follow these simple steps:
+
+1) Delete all files in your root on 0xBlog except the config.php file
+2) Upload all new files for version 3.3.0 except: config.php and install.php
+3) Upload the file upgrade_3_2_2_to_3_3_0.php in your root 0xBlog (where config.php is located)
+4) Open the file upgrade_3_2_2_to_3_3_0.php and follow the signs
+5) When done delete the file upgrade_3_2_2_to_3_3_0.php
+6) Finish: D

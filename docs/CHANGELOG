@@ -1,5 +1,21 @@
                         CHANGELOG FILE
 
+v3.3.0 [BUG FIX and MAINTENANCE RELEASE]
+	[!FIX] Inserito controllo estenzione dei file in themes BUG #14 Thanks SHG
+	[!FIX] Fixato errore logico nella funzione updates()
+	[FIX] Fix all h2 tag close
+	[FIX] Error div message in security class
+	[FIX] Fix window.location in settings success update
+	[FIX] Fix textarea overflow in new_article(), edit_article()
+	[FIX] Fix table overflow in admin home page
+	[FIX] Sistemata lintestazione di BBCode e Smile
+	[ADD] Semplificata l'aggiunta di smile negli editor di Articoli
+	[ADD] Aggiunta la possibilità di abilitare/disabilitare il log IP dei commenti (Thanks k1r4h4ck for idea)
+	[ADD] Aggiunto BBCode [code][/code]
+	[ADD] Aggiunto numero di visioni per ogni articolo in home amministrativa
+	[ADD] Aggiunto formato numerico per i numero di visione articolo inserendo la virgola ogni 3 cifre
+	[CHANGE] Reso case-insensitive il login (username)
+
 v3.2.2 ![STABLE RELEASE]!
     [!FIX] Fix check_update() function [HOT]
 

@@ -27,7 +27,7 @@ include("lib/security.class.php");
 
 class Core extends Security {
 	
-	const VERSION = '3.2.2';
+	const VERSION = '3.3.0';
 
 	public function __construct () {
 	
@@ -163,9 +163,12 @@ class Core extends Security {
 			include_once("lib/admin.class.php");
 			$BBcode = new Admin();
 			
-			print $BBcode->BBcode($tmp)." ...<a href=\"viewpost.php?id=".$this->articles['id']."\">[".$lang['go_read']."]</a>\n</p>\n";
+			print $BBcode->BBcode(str_replace('[code]', '',$tmp))." ...<a href=\"viewpost.php?id=".$this->articles['id']."\">[".$lang['go_read']."]</a>\n</p>\n";
 			
-			print "\n<br /><br /><p align=\"right\"><b>".$lang['categories']."</b>: ".$this->cat['cat_name']." ~ <b>".$lang['view'].":</b> ".$this->articles['num_read']." ~ <b>".$lang['date'].":</b>".$this->articles['post_date']." ~ <b>".$lang['name_author'].":</b> <em><u><a href=\"mailto:".$this->mail[0]."\">".$this->articles['author']."</a></u></em></p>"
+			print "\n<br /><br /><p align=\"right\"><b>".$lang['categories']."</b>: ".$this->cat['cat_name']
+				. " ~ <b>".$lang['view'].":</b> ".number_format((int)$this->articles['num_read'])
+				. " ~ <b>".$lang['date'].":</b>".$this->articles['post_date']
+				. " ~ <b>".$lang['name_author'].":</b> <em><u><a href=\"mailto:".$this->mail[0]."\">".$this->articles['author']."</a></u></em></p>"
 				. "\n<br /> ".$lang['comments'].":".$this->comments."<br />";
 				
 			print "\n<br /><br />\n<hr />";
@@ -277,8 +280,14 @@ class Core extends Security {
 	
 				$commento = $this->VarProtect( $_POST['comment'] );
 				$name     = $this->VarProtect( $_POST['name']    );
-				$ip       = $_SERVER['REMOTE_ADDR'];
 				
+				$this->log_ip = mysql_fetch_array($this->sql->sendQuery("SELECT ip_log_active FROM ".__PREFIX__."config"));
+				
+				if($this->log_ip['ip_log_active'] == 0)
+					$ip = 'NULL';
+				else
+					$ip = $_SERVER['REMOTE_ADDR'];
+
 				//eseguo query di isnerimento
 				$this->sql->sendQuery("INSERT INTO ".__PREFIX__."comments (blog_id, name, comment, ip) VALUES ('".$this->id."', '{$name}', '{$commento}', '{$ip}')");
 				header("Location: viewpost.php?id=".$this->id);
@@ -333,16 +342,16 @@ class Core extends Security {
 				. "\n<!-- Admin menu -->";
 		}else{	
 			print "\n<!-- menu -->"
-			. "\n<div id=\"navigation\">"
-			. "\n    <p><h2>Menu</h2></p>"
-			. "\n    <ul style=\"list-style-type:none;\">"
-			. "\n      <li><a href=\"index.php\">Home Page</a></li>"
-			. "\n      <li><a href=\"search.php\">".$lang['search']."</a></li>"
-			. "\n      <li><a href=\"admin.php\">".$lang['admin']."</a></li>"
-			. "\n    </ul>"
-			. "\n    <hr />"
-			. "\n    ".$lang['categories'].":<br />"
-			. "\n <ul>";
+				. "\n<div id=\"navigation\">"
+				. "\n    <p><h2>Menu</h2></p>"
+				. "\n    <ul style=\"list-style-type:none;\">"
+				. "\n      <li><a href=\"index.php\">Home Page</a></li>"
+				. "\n      <li><a href=\"search.php\">".$lang['search']."</a></li>"
+				. "\n      <li><a href=\"admin.php\">".$lang['admin']."</a></li>"
+				. "\n    </ul>"
+				. "\n    <hr />"
+				. "\n    ".$lang['categories'].":<br />"
+				. "\n <ul>";
 			
 			$this->query = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories");
 			

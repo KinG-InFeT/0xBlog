@@ -110,3 +110,12 @@ div#footer {
 	width:100%;
 	border: 1px dotted white;
 }
+
+.code{
+	border : 1px solid #444;
+	background-color: #222;
+	width : 500px;
+	padding: 10px;
+	position: static;
+	overflow: auto;
+}

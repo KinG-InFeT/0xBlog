@@ -60,10 +60,11 @@ class Admin extends Security  {
 			. "\n	  <td><b>".$lang['view_post']."</b></td>"
 			. "\n	  <td><b>".$lang['comment']."</b></td>"
 			. "\n	  <td><b>".$lang['date']."</b></td>"
+			. "\n	  <td><b>".$lang['view']."</b></td>"
 			. "\n	  <td><b>[".$lang['manage']."]</b></td>"
 			. "\n	</tr>";
 		
-		$this->post = $this->sql->sendQuery("SELECT id, author, title, post, post_date FROM ".__PREFIX__."articles ORDER by id DESC");
+		$this->post = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles ORDER by id DESC");
 		
 		while($this->article = mysql_fetch_array($this->post)) {
 		
@@ -78,6 +79,7 @@ class Admin extends Security  {
 				. "\n	  <td><a href=\"viewpost.php?id=".$this->article['id']."\">[".$lang['view_post']."]</a></td>"
 				. "\n	  <td>".mysql_num_rows($this->comment)."".$this->manage."</td>"
 				. "\n	  <td>".$this->article['post_date']."</td>"
+				. "\n	  <td>".number_format((int)$this->article['num_read'])."</td>"
 				. "\n	  <td><a href=\"admin.php?action=del_post&id=".$this->article['id']."&security=".$_SESSION['token']."\">[X]</a> ~ <a href=\"admin.php?action=edit_post&id=".$this->article['id']."\">[".$lang['mod']."]</a></td>"
 				. "\n	</tr>";
 		}
@@ -88,7 +90,7 @@ class Admin extends Security  {
 	
 	/*
 	 * BBCODES:
-	 * [img]<image_path>[/img]
+	 * [code] various_code[/code]
 	 * [url=<url_path>]<url_name>[/url]
 	 * [url]<url_path>[/url]
 	 * [img]<link image>[/img]
@@ -132,6 +134,8 @@ class Admin extends Security  {
 		$text = str_replace("[/u]", "</u>", $text);
 		$text = str_replace("[center]", "<center>", $text);
 		$text = str_replace("[/center]", "</center>", $text);
+		$text = str_replace("[code]", "<div class=\"code\">Code:<hr /><pre>", $text);
+		$text = str_replace("[/code]", "</pre></div><!-- code -->", $text);
 		
 		//Link BBcode
  		$search  = array(
@@ -192,10 +196,9 @@ class Admin extends Security  {
     	      	    	print "\n<option value=\"".$this->category['cat_id']."\">".$this->category['cat_name']."</option>";
     	      	    
     	    print ' </select>
-    	    		<br /><br />
-    	    		Smile: :) , :( , :D , ;) , ^_^ .<br /><br />
-    	      	    BBcode:<br />
-    		        * [img] image_path [/img]<br />
+    	    		<br /><br />							
+					BBcode:<br />
+					* [code] various_code [/code]<br />
 					* [url= url_path ] url_name [/url]<br />
 					* [url] url_path [/url]<br />
 					* [img] url_img [/img]<br />
@@ -204,9 +207,15 @@ class Admin extends Security  {
 					* [i] text [/i]<br />
 					* [u] text [/u]<br />
 					* [center] text [/center]<br />
-				<br />
-    	      	    '.$lang['article'].':<br />
-    	      	    <textarea name="article" cols="100" rows="25"></textarea><br /><br />
+					<br />
+					'.$lang['article'].':<br />
+					<img src="img/01.jpg" alt="sorriso" onclick="document.getElementById(\'article\').value+=\' :) \'">
+					<img src="img/02.jpg" alt="felicemente" onclick="document.getElementById(\'article\').value+=\' :D \'">
+					<img src="img/03.jpg" alt="ok" onclick="document.getElementById(\'article\').value+=\' ;) \'">
+					<img src="img/04.gif" alt="felice" onclick="document.getElementById(\'article\').value+=\' ^_^ \'">
+					<img src="img/06.gif" alt="triste" onclick="document.getElementById(\'article\').value+=\' :( \'">
+					<br />
+    	      	    <textarea id="article" name="article" cols="90" rows="25"></textarea><br /><br />
     	      	    <input type="submit" value="'.$lang['send_new_article'].'" />
     	      	    <input type="hidden" name="security" value="'.$_SESSION['token'].'" />
     	      	    <br /><br /></form>';
@@ -221,7 +230,7 @@ class Admin extends Security  {
 		$this->my_is_numeric($this->id);
 				
 		if(empty($this->id))
-			die("<div id=\"error\"><h2 align=\"center\">".$lang['id_not_exist']."</p></div>");
+			die("<div id=\"error\"><h2 align=\"center\">".$lang['id_not_exist']."</h2></div>");
 		
 		print "<h2 align=\"center\">".$lang['title_comments']."</h2><br />\n";
 		
@@ -261,7 +270,7 @@ class Admin extends Security  {
 		$this->id = (int) $id;
 		
 		if(empty($this->id))
-			die("<div id=\"error\"><h2 align=\"center\">".$lang['id_not_exist']."</p></div>");
+			die("<div id=\"error\"><h2 align=\"center\">".$lang['id_not_exist']."</h2></div>");
 			
 		$this->security_token($_POST['security'], $_SESSION['token']);
 		
@@ -341,9 +350,14 @@ class Admin extends Security  {
 		print "<h2 align=\"center\">".$lang['title_settings']."</h2><br />\n";
 		
 		include_once("lib/language.class.php");
-		$lol = new Language();
+		$lang_tool = new Language();
 	
-		if(!empty($_POST['title']) && !empty($_POST['desc']) && !empty($_POST['lang']) && !empty($_POST['limit']) && !empty($_POST['footer'])) {
+		if(!empty($_POST['title'])  && 
+		   !empty($_POST['desc'])   && 
+		   !empty($_POST['lang'])   && 
+		   !empty($_POST['limit'])  && 
+		   !empty($_POST['footer'])
+		  ) {
 			
 			$this->security_token($_POST['security'], $_SESSION['token']);
 			
@@ -352,8 +366,9 @@ class Admin extends Security  {
 			$this->lang   = $this->VarProtect( $_POST['lang']   );
 			$this->limit  =           intval ( $_POST['limit']  );
 			$this->footer = $this->VarProtect( $_POST['footer'] );						
+			$this->log_ip = 		  intval ( $_POST['log_ip'] );	
 			 
-			if($lol->check_exist_language($this->lang) == FALSE)
+			if($lang_tool->check_exist_language($this->lang) == FALSE)
 				die('<script>alert("'.$lang['lang_not_exist'].'"); window.location="admin.php?action=settings";</script>');
 			
 			$this->sql->sendQuery("UPDATE `".__PREFIX__."config` SET 
@@ -361,9 +376,10 @@ class Admin extends Security  {
 									`description` = '".$this->desc."', 
 									`lang` = '".$this->lang."',
 									`limit` = '".$this->limit."',
-									`footer` = '".$this->footer."' LIMIT 1 ;");
+									`footer` = '".$this->footer."',
+									`ip_log_active` = '".$this->log_ip."' LIMIT 1 ;");
 			
-			print "<script>alert(\"".$lang['setting_success'].".\"); window.location=\"admin.php\";</script>";
+			print "<script>alert(\"".$lang['setting_success'].".\"); window.location=\"admin.php?action=settings\";</script>";
 		
 		}else{
 			$this->config = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
@@ -386,7 +402,7 @@ class Admin extends Security  {
 				. "\n	<td>"
 				. "\n<select name='lang'>";
 				
-				$lol->list_language();
+				$lang_tool->list_language();
 					
 			print "\n</select>"
 				. "\n</td>"
@@ -398,7 +414,12 @@ class Admin extends Security  {
 				. "\n<tr>"
 				. "\n	<td>".$lang['setting_footer'].":</td>"
 				. "\n	<td><input type=\"text\" name=\"footer\" value=\"".$this->config['footer']."\" /></td>"
-				. "\n</tr>"				
+				. "\n</tr>"		
+				. "\n<tr>"
+				. "\n	<td>Log IP:</td>"
+				. "\n	<td><input type=\"radio\" name=\"log_ip\" value=\"1\" checked=\"checked\"> Anable <br />"
+				. "\n	<input type=\"radio\" name=\"log_ip\" value=\"0\"> Disable</td>"
+				. "\n</tr>"	
 				. "\n</tbody>"
 				. "\n</table>"
 				. "\n<br /><input type=\"submit\" value=\"".$lang['send']."\" />"
@@ -514,7 +535,7 @@ class Admin extends Security  {
 				$this->a_id   = $this->users['id'];
 				$this->a_user = $this->users['username'];
 				
-				if($_COOKIE['0xBlog_Username'] != $this->a_user)
+				if(strtolower($_COOKIE['0xBlog_Username']) != strtolower($this->a_user))
 					print "\n<option value = \"".$this->a_id."\">".$this->a_user."</option>";
 			}
 			print "\n</select>"
@@ -606,20 +627,43 @@ class Admin extends Security  {
 	
 		$this->theme_name = "themes/".htmlspecialchars(stripslashes($theme_name));
 		
+		//Fix #14 BUG
+		$ext = $this->check_extension($this->theme_name);
+		if($ext != 'css')
+			die("<div id=\"error\"><h2 align=\"center\">".$lang['ext_not_validate']."</h2></div>");
+		
+		if(!file_exists($this->theme_name))
+			die("<div id=\"error\"><h2 align=\"center\">".$lang['theme_not_found']."</h2></div>");
+			
 		print "<h2 align=\"center\">".$lang['title_edit_theme']."</h2><br />\n";	
 		
-		if (!empty($_POST['send']) && ($_POST['send'] == 1) && !empty($_POST['theme_file'])) {
+		if ( !empty($_POST['send']) && 
+		    ($_POST['send'] == 1)   && 
+		    !empty($_POST['theme_file']) &&
+			file_exists("themes/" . $_POST['theme_file'])
+		   ) {
+		
+			//Fix #14 BUG
+			$ext = $this->check_extension($_POST['theme_file']);
+			if($ext != 'css')
+				die("<div id=\"error\"><h2 align=\"center\">".$lang['ext_not_validate']."</h2></div>");
+		
 
 			$this->security_token($_POST['security'], $_SESSION['token']);
 
 			$scrivi_file = fopen($this->theme_name,"w");
-			fwrite($scrivi_file,htmlspecialchars(stripslashes($_POST['theme_file']))) or die("Error writing file:" . $this->theme_name);
+			fwrite($scrivi_file,htmlspecialchars(stripslashes($_POST['theme_file']))) or die("Error writing file:".$this->theme_name);
 			fclose($scrivi_file);
 				
 			print "<script>alert(\"".$lang['theme_edited']."\"); window.location.href = 'admin.php?action=themes';</script>";
 
 		}else{
-
+			
+			//Fix #14 BUG
+			$ext = $this->check_extension($this->theme_name);
+			if($ext != 'css')
+				die("<div id=\"error\"><h2 align=\"center\">".$lang['ext_not_validate']."</h2></div>");
+				
 			$leggi_file  = fopen($this->theme_name,"r");
 			$dim_file    = filesize($this->theme_name);
 			
@@ -629,7 +673,7 @@ class Admin extends Security  {
 			
 			print "\n<form method=\"POST\" action=\"admin.php?action=edit_theme\" />"
 				. "\n<p align=\"center\">Theme File:<br />"
-				. "\n<textarea name=\"theme_file\" rows=\"25\" cols=\"100\">".$this->theme_file."</textarea><br />"
+				. "\n<textarea name=\"theme_file\" rows=\"25\" cols=\"90\">".$this->theme_file."</textarea><br />"
 				. "\n<input type=\"hidden\" name=\"security\" value=\"".$_SESSION['token']."\" />"
 				. "\n<input type=\"hidden\" name=\"theme_name\" value=\"".htmlspecialchars($theme_name)."\" />"
 				. "\n<input type=\"hidden\" name=\"send\" value=\"1\" />"
@@ -736,18 +780,26 @@ class Admin extends Security  {
     			      	    while($this->category = mysql_fetch_array($this->cat))
     			      	    	print "\n<option value=\"".$this->category['cat_id']."\">".$this->category['cat_name']."</option>";
     	      	    
-		    	    print ' </select><br />
-    			            Smile: :) , :( , :D , ;) , ^_^ .<br /><br />
-    			            BBcode:<br />
-    			            * [img] image_path [/img]<br />
+		    	    print ' </select><br />							
+							BBcode:<br />
+							* [code] various_code [/code]<br />
 							* [url= url_path ] url_name [/url]<br />
 							* [url] url_path [/url]<br />
+							* [img] url_img [/img]<br />
+							* [youtube] id_code_video [/youtube] ( http://www.youtube.com/watch?v=<b>8UFIYGkROII</b> ) <br />
 							* [b] text [/b]<br />
 							* [i] text [/i]<br />
 							* [u] text [/u]<br />
+							* [center] text [/center]<br />
 							<br />
     			            '.$lang['article'].':<br />
-    			            <textarea name="article" cols="100" rows="25">'.$this->data_article['post'].'</textarea><br /><br />
+							<img src="img/01.jpg" alt="sorriso" onclick="document.getElementById(\'article\').value+=\' :) \'">
+							<img src="img/02.jpg" alt="felicemente" onclick="document.getElementById(\'article\').value+=\' :D \'">
+							<img src="img/03.jpg" alt="ok" onclick="document.getElementById(\'article\').value+=\' ;) \'">
+							<img src="img/04.gif" alt="felice" onclick="document.getElementById(\'article\').value+=\' ^_^ \'">
+							<img src="img/06.gif" alt="triste" onclick="document.getElementById(\'article\').value+=\' :( \'">
+							<br />
+							<textarea id="article" name="article" cols="90" rows="25">'.$this->data_article['post'].'</textarea><br /><br />
     			            <input type="submit" value="'.$lang['send_edit'].'" />
     			            <br /><br />
 							<input type="hidden" name="security" value="'.$_SESSION['token'].'" />

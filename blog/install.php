@@ -174,12 +174,16 @@ if (   !empty( $_POST['username'] )
 	  `themes` text NOT NULL,
 	  `lang` text NOT NULL,
 	  `limit` INT NOT NULL,
-	  `footer` text NOT NULL 
+	  `footer` text NOT NULL, 
+	  `ip_log_active` INT NOT NULL 
 	);") or die(mysql_error());
 	
 	echo "Table <b>'".$prefix."config'</b> created with success<br />\n";
 	
-	mysql_query("INSERT INTO ".$prefix."config (`title`, `description`, `themes`, `lang`, `limit`, `footer`) VALUES ('".$title."', '".$desc."', 'default.css', '".$lang."', '".$limit."', '".$footer."');") or die(mysql_error());
+	mysql_query("INSERT INTO ".$prefix."config (`title`, `description`, `themes`, `lang`, `limit`, `footer`, `ip_log_active`
+				) VALUES (
+				'".$title."', '".$desc."', 'default.css', '".$lang."', '".$limit."', '".$footer."', 1);") 
+			or die(mysql_error());
 		
 	echo "<b>Configuration</b> added with success<br />\n";
 			
