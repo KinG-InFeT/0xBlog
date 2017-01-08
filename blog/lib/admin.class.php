@@ -545,8 +545,10 @@ class Admin extends Security  {
 		}else{
 			$this->security_token($_POST['security'], $_SESSION['token']);
 			
+			$this->admin = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."users WHERE id = '".$this->id."'"));
+			
 			$this->sql->sendQuery("DELETE FROM ".__PREFIX__."users WHERE id = '".$this->id."'");		
-			print "<script>alert('Account ".$this->a_user." ".$lang['delete']."!'); location.href = 'admin.php?action=del_admin';</script>";
+			print "<script>alert('Account ".$this->admin['username']." ".$lang['delete']."!'); location.href = 'admin.php?action=del_admin';</script>";
 		}
 	}
 	
