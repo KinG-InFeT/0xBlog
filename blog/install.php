@@ -46,12 +46,12 @@ if(defined("__INSTALLED__"))
 function VarProtect ($content) {
 	if (is_array ($content)) {
 		foreach ($content as $key => $val)
-			$content[$key] = mysql_real_escape_string (htmlentities (stripslashes ($content[$key])));
+			$content[$key] = addslashes (htmlentities (stripslashes ($content[$key])));
 	}else{
-		$content = mysql_real_escape_string (htmlentities ($content));
+		$content = addslashes (htmlentities ($content));
 	}
 	
-	return (get_magic_quotes_gpc () ? stripslashes ($content) : $content);
+	return stripslashes ($content);
 }
 ?>
 
@@ -130,13 +130,10 @@ if (   !empty( $_POST['username'] )
 	$name = htmlspecialchars( $_POST['name'] );
 	
 	//Dati Connessione MySQL e Connessione
-	$db_connect = @mysql_connect  ( $host, $user, $pass );
-	$db_select  = @mysql_select_db( $name );
+	$db_connect = @mysqli_connect  ( $host, $user, $pass, $name);
 
 	if(!$db_connect)
 		die("<b>Errore durante la connessione al database MySQL</b><br />".mysql_errno()." : ".mysql_error());
-	elseif(!$db_select)
-		die("<b>Errore durante la selezione del database MySQL</b><br />".mysql_errno()." : ".mysql_error());
 	
 	//dati amministrazione
 	$user_admin    = VarProtect ( $_POST['username'] );
@@ -152,7 +149,7 @@ if (   !empty( $_POST['username'] )
 	$lang    = VarProtect( $_POST['lang']    );	
 		
 	//creo la tabella users
-	mysql_query("CREATE TABLE `".$prefix."users` (
+	mysqli_query($db_connect, "CREATE TABLE `".$prefix."users` (
 	  `id` int(11) NOT NULL auto_increment,
 	  `username` text NOT NULL,
 	  `password` text NOT NULL,
@@ -162,13 +159,13 @@ if (   !empty( $_POST['username'] )
 	
 	echo "Table <b>'".$prefix."users'</b> created with success<br />\n";
 	
-	mysql_query("INSERT INTO ".$prefix."users (username, password, email) VALUES ('".$user_admin."', '".$pass_admin."', '".$email."');") or die(mysql_error());
+	mysqli_query($db_connect, "INSERT INTO ".$prefix."users (username, password, email) VALUES ('".$user_admin."', '".$pass_admin."', '".$email."');") or die(mysql_error());
 		
 	echo "User <b>".$user_admin."</b> added with success<br />\n";
 	
 	
 	//tabella config
-	mysql_query("CREATE TABLE `".$prefix."config` (
+	mysqli_query($db_connect, "CREATE TABLE `".$prefix."config` (
 	  `title` text NOT NULL,
 	  `description` text NOT NULL,
 	  `themes` text NOT NULL,
@@ -180,7 +177,7 @@ if (   !empty( $_POST['username'] )
 	
 	echo "Table <b>'".$prefix."config'</b> created with success<br />\n";
 	
-	mysql_query("INSERT INTO ".$prefix."config (`title`, `description`, `themes`, `lang`, `limit`, `footer`, `ip_log_active`
+	mysqli_query($db_connect, "INSERT INTO ".$prefix."config (`title`, `description`, `themes`, `lang`, `limit`, `footer`, `ip_log_active`
 				) VALUES (
 				'".$title."', '".$desc."', 'default.css', '".$lang."', '".$limit."', '".$footer."', 1);") 
 			or die(mysql_error());
@@ -188,7 +185,7 @@ if (   !empty( $_POST['username'] )
 	echo "<b>Configuration</b> added with success<br />\n";
 			
 	//tabella articles
-	mysql_query("CREATE TABLE `".$prefix."articles` (
+	mysqli_query($db_connect, "CREATE TABLE `".$prefix."articles` (
 	  `id` int(11) NOT NULL auto_increment,
 	  `author` text NOT NULL,
 	  `title` text NOT NULL,
@@ -202,7 +199,7 @@ if (   !empty( $_POST['username'] )
 		echo "Table <b>'".$prefix."articles'</b> created with success<br />\n";
 		
 	//tabella comments
-	mysql_query("CREATE TABLE `".$prefix."comments` (
+	mysqli_query($db_connect, "CREATE TABLE `".$prefix."comments` (
 	  `id` int(11) NOT NULL auto_increment,
 	  `blog_id` int(11) NOT NULL default '0',
 	  `name` text NOT NULL,
@@ -213,7 +210,7 @@ if (   !empty( $_POST['username'] )
 	
 	echo "Table <b>'".$prefix."comments'</b> created with success<br />\n";
 	
-	mysql_query("CREATE TABLE `".$prefix."categories` (
+	mysqli_query($db_connect, "CREATE TABLE `".$prefix."categories` (
 					`cat_id` int( 11 ) NOT NULL AUTO_INCREMENT,
 					`cat_name` text NOT NULL ,
 				KEY `cat_id` ( `cat_id` )
@@ -221,7 +218,7 @@ if (   !empty( $_POST['username'] )
 	
 	echo "Table <b>'".$prefix."categories'</b> created with success<br />\n";
 	
-	mysql_query("INSERT INTO ".$prefix."categories (`cat_id`, `cat_name`) VALUES ('1', 'General');") or die(mysql_error());
+	mysqli_query($db_connect, "INSERT INTO ".$prefix."categories (`cat_id`, `cat_name`) VALUES ('1', 'General');") or die(mysql_error());
 		
 	echo "<b>Default Categories</b> added with success<br />\n";
 	

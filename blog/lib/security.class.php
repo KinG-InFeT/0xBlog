@@ -19,9 +19,9 @@ class Security {
 		
 		if (is_array ($this->content)) {
 			foreach ($this->content as $key => $val)
-				$this->content[$key] = mysql_real_escape_string (htmlspecialchars ($this->content[$key]));
+				$this->content[$key] = addslashes (htmlspecialchars ($this->content[$key]));
 		}else{
-			$this->content = mysql_real_escape_string (htmlspecialchars ($this->content));
+			$this->content = addslashes (htmlspecialchars ($this->content));
 		}
 	
 		//return (get_magic_quotes_gpc () ? stripslashes ($this->content) : $this->content);

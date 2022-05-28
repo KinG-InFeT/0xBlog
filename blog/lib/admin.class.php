@@ -66,10 +66,10 @@ class Admin extends Security  {
 		
 		$this->post = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles ORDER by id DESC");
 		
-		while($this->article = mysql_fetch_array($this->post)) {
+		while($this->article = mysqli_fetch_assoc($this->post)) {
 		
 			$this->comment  = $this->sql->sendQuery("SELECT blog_id FROM ".__PREFIX__."comments WHERE blog_id = '".$this->article['id']."'");
-			$this->comments = mysql_fetch_row($this->comment);
+			$this->comments = mysqli_fetch_row($this->comment);
 			
 			$this->manage = ($this->comments < 1) ? "" : "<a href=\"admin.php?action=manage_comments&id=".$this->comments[0]."\">[".$lang['manage']."]</a>";
 			
@@ -77,7 +77,7 @@ class Admin extends Security  {
 				. "\n	  <td>".$this->article['title']."</td>"
 				. "\n	  <td>".$this->article['author']."</td>"
 				. "\n	  <td><a href=\"viewpost.php?id=".$this->article['id']."\">[".$lang['view_post']."]</a></td>"
-				. "\n	  <td>".mysql_num_rows($this->comment)."".$this->manage."</td>"
+				. "\n	  <td>".mysqli_num_rows($this->comment)."".$this->manage."</td>"
 				. "\n	  <td>".$this->article['post_date']."</td>"
 				. "\n	  <td>".number_format((int)$this->article['num_read'])."</td>"
 				. "\n	  <td><a href=\"admin.php?action=del_post&id=".$this->article['id']."&security=".$_SESSION['token']."\">[X]</a> ~ <a href=\"admin.php?action=edit_post&id=".$this->article['id']."\">[".$lang['mod']."]</a></td>"
@@ -192,7 +192,7 @@ class Admin extends Security  {
     	      	    '.$lang['associate_category'].'<br />
     	      	    <select name="category">';
     	      	    
-    	      	    while($this->category = mysql_fetch_array($this->cat))
+    	      	    while($this->category = mysqli_fetch_assoc($this->cat))
     	      	    	print "\n<option value=\"".$this->category['cat_id']."\">".$this->category['cat_name']."</option>";
     	      	    
     	    print ' </select>
@@ -236,7 +236,7 @@ class Admin extends Security  {
 		
 		$this->comments = $this->sql->sendQuery("SELECT id, blog_id, name, comment, ip FROM ".__PREFIX__."comments WHERE blog_id = '".$this->id."'");
 		
-		if(mysql_num_rows($this->comments) < 1) {
+		if(mysqli_num_rows($this->comments) < 1) {
 			print "<p><b>".$lang['no_comment']."</b></p>";
 		}else{
 			print '<table style="border-collapse: collapse;" border="2" align="center" cellpadding="10" cellspacing="1">
@@ -248,7 +248,7 @@ class Admin extends Security  {
 				  <td><center>[#]</center></td>
 				</tr>';	
 				
-			while($this->comment = mysql_fetch_array($this->comments)) {
+			while($this->comment = mysqli_fetch_assoc($this->comments)) {
 				print "\n<form action='admin.php?action=del_comment' method='POST'>";	
 				print "\n<tr>"
 					  . "\n<td>".htmlspecialchars($this->comment['name'])."</td>"
@@ -382,7 +382,7 @@ class Admin extends Security  {
 			print "<script>alert(\"".$lang['setting_success'].".\"); window.location=\"admin.php?action=settings\";</script>";
 		
 		}else{
-			$this->config = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
+			$this->config = mysqli_fetch_assoc($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
 			
 			print "\n<h2 align=\"center\">".$lang['setting']."</h2>"
 				. "\n<br /><br />"
@@ -435,7 +435,7 @@ class Admin extends Security  {
 		
 		$this->check = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."users WHERE username = '".$this->user."' limit 1;");
 		
-		if(mysql_num_rows($this->check) == 1)
+		if(mysqli_num_rows($this->check) == 1)
 			return TRUE;
 		else
 			return FALSE;
@@ -447,7 +447,7 @@ class Admin extends Security  {
 		
 		$this->check = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."users WHERE email = '".$this->email."' limit 1;");
 		
-		if(mysql_num_rows($this->check) == 1)
+		if(mysqli_num_rows($this->check) == 1)
 			return TRUE;
 		else
 			return FALSE;
@@ -530,7 +530,7 @@ class Admin extends Security  {
 					
 			$this->query = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."users");
 			
-			while ($this->users = mysql_fetch_array ($this->query , MYSQL_ASSOC)) {
+			while ($this->users = mysqli_fetch_assoc ($this->query )) {
 			
 				$this->a_id   = $this->users['id'];
 				$this->a_user = $this->users['username'];
@@ -545,7 +545,7 @@ class Admin extends Security  {
 		}else{
 			$this->security_token($_POST['security'], $_SESSION['token']);
 			
-			$this->admin = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."users WHERE id = '".$this->id."'"));
+			$this->admin = mysqli_fetch_assoc($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."users WHERE id = '".$this->id."'"));
 			
 			$this->sql->sendQuery("DELETE FROM ".__PREFIX__."users WHERE id = '".$this->id."'");		
 			print "<script>alert('Account ".$this->admin['username']." ".$lang['delete']."!'); location.href = 'admin.php?action=del_admin';</script>";
@@ -700,7 +700,7 @@ class Admin extends Security  {
 					
 			$this->query = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."users");
 			
-			while ($this->users = mysql_fetch_array ($this->query , MYSQL_ASSOC)) {
+			while ($this->users = mysqli_fetch_assoc ($this->query )) {
 			
 				$this->a_id   = $this->users['id'];
 				$this->a_user = $this->users['username'];
@@ -711,7 +711,7 @@ class Admin extends Security  {
 				. "\n<input type = \"submit\" value = \"".$lang['select']."\">"
 				. "\n</form>";
 		}else{
-			$this->admin = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."users WHERE id = '".$this->id."'"));
+			$this->admin = mysqli_fetch_assoc($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."users WHERE id = '".$this->id."'"));
 			
 			print "\n<form method = \"POST\" action=\"admin.php?action=change_pass_admin\" />\n"
 				. "\nAdmin: <b>".$this->admin['username']."</b><br />"
@@ -744,7 +744,7 @@ class Admin extends Security  {
 				. "\n<input type=\"submit\" value=\"".$lang['send']."\" /></form>";
 		}else{
 		
-	    	if(mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE id = '".$this->id."'")) < 1)
+	    	if(mysqli_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE id = '".$this->id."'")) < 1)
 				die("<script>alert(\"".$lang['article_not_exist'].".\");location.href = 'admin.php?action=edit_post';</script>");
 	    		
 			if (!empty($_POST['author']) && !empty($_POST['title']) && !empty($_POST['article'])) {
@@ -762,7 +762,7 @@ class Admin extends Security  {
 			        print "<script>alert(\"".$lang['edit_success']."!\");</script>";
 			        print '<script>window.location="admin.php";</script>';
 			    }else{
-			    	$this->data_article = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE id = '".$this->id."'"));
+			    	$this->data_article = mysqli_fetch_assoc($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE id = '".$this->id."'"));
 			    	
     				$this->cat = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories");
     				
@@ -775,11 +775,11 @@ class Admin extends Security  {
     			      	    '.$lang['associate_category'].'<br />
     			      	    <select name="category">';
     			      	    
-    			      	    $this->cat_name = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".$this->data_article['cat_id'].""));
+    			      	    $this->cat_name = mysqli_fetch_assoc($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".$this->data_article['cat_id'].""));
     			      	    
 		      	   print "\n<option value=\"".$this->data_article['cat_id']."\">".$this->cat_name['cat_name']."</option>";
     		      	    
-    			      	    while($this->category = mysql_fetch_array($this->cat))
+    			      	    while($this->category = mysqli_fetch_assoc($this->cat))
     			      	    	print "\n<option value=\"".$this->category['cat_id']."\">".$this->category['cat_name']."</option>";
     	      	    
 		    	    print ' </select><br />							
@@ -862,7 +862,7 @@ class Admin extends Security  {
 					
 			$this->query = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories");
 			
-			while ($this->cat = mysql_fetch_array ($this->query , MYSQL_ASSOC)) {
+			while ($this->cat = mysqli_fetch_assoc ($this->query )) {
 			
 				$this->cat_id   = $this->cat['cat_id'];
 				$this->cat_name = $this->cat['cat_name'];
@@ -873,7 +873,7 @@ class Admin extends Security  {
 				. "\n<input type = \"submit\" value = \"".$lang['select']."\">"
 				. "\n</form>";
 		}else{
-			$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories WHERE cat_id = '".$this->id."'"));
+			$this->cat = mysqli_fetch_assoc($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories WHERE cat_id = '".$this->id."'"));
 			
 			print "\n<form method = \"POST\" action=\"admin.php?action=edit_category\" />\n"
 				. "\nCategory: <input type=\"text\" name=\"new_cat\" value=\"".$this->cat['cat_name']."\" /><br />"
@@ -906,12 +906,12 @@ class Admin extends Security  {
 					
 			$this->query = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories");
 			
-			while ($this->cat = mysql_fetch_array ($this->query , MYSQL_ASSOC)) {
+			while ($this->cat = mysqli_fetch_assoc ($this->query )) {
 			
 				$this->cat_id   = $this->cat['cat_id'];
 				$this->cat_name = $this->cat['cat_name'];
 				
-				$this->num_art_for_cat = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".$this->cat_id."'"));
+				$this->num_art_for_cat = mysqli_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".$this->cat_id."'"));
 				
 				print "\n<option value = \"".$this->cat_id."\">".$this->cat_name." (".$this->num_art_for_cat.")</option>";
 			}

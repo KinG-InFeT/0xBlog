@@ -40,7 +40,7 @@ class Core extends Security {
 	public function show_header($title) {
 	global $lang;
 	
-		$this->config =  mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
+		$this->config =  mysqli_fetch_assoc($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
 		
 		$this->title  = (!empty($title)) ? $this->VarProtect($title) : $this->config['title'];
 	?>
@@ -59,7 +59,7 @@ class Core extends Security {
 				Please check if the selected file in the theme really exist.<br />
 				File: ".$this->config['themes']);
 		?>
-		<script   language="javascript">
+		<script   language="text/javascript">
 		function captcha()  { 
 			document.addcomment.captcha.focus()
 		}
@@ -120,9 +120,9 @@ class Core extends Security {
 	global $page;
 	global $lang;
 		
-		$this->config = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
+		$this->config = mysqli_fetch_assoc($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
 		
-		$total  = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles ORDER by id DESC"));
+		$total  = mysqli_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles ORDER by id DESC"));
 		$pager 	= $this->Pagination($total, $this->config['limit'], $page); 
 		$offset = $pager['offset'];
 		$limit 	= $pager['limit'];
@@ -136,9 +136,9 @@ class Core extends Security {
 	    if($total < 1)
 	    	print "\n<p align=\"center\"><b>".$lang['no_items']."</b></p>";
 	    	
-		while($this->articles = mysql_fetch_array($this->blog)) {
+		while($this->articles = mysqli_fetch_assoc($this->blog)) {
 		
-			$this->comments = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."comments WHERE blog_id = '".$this->articles['id']."'"));
+			$this->comments = mysqli_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."comments WHERE blog_id = '".$this->articles['id']."'"));
 			
 			$tmp = NULL;
 		
@@ -154,10 +154,10 @@ class Core extends Security {
 			//$tmp = str_replace("\n","<br />",$tmp);
 			
 			//estraggo l'email dell'autore dell'articolo
-			$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".mysql_real_escape_string($this->articles['author'])."'"));
+			$this->mail = mysqli_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".addslashes($this->articles['author'])."'"));
 			
 			//estraggo il nome della categoria
-			$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".mysql_real_escape_string($this->articles['cat_id'])));
+			$this->cat = mysqli_fetch_assoc($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".addslashes($this->articles['cat_id'])));
 
 			//BBcode
 			include_once("lib/admin.class.php");
@@ -197,7 +197,7 @@ class Core extends Security {
 		
 		$this->my_is_numeric($this->id);
 		
-		$this->get_title = mysql_fetch_array($this->sql->sendQuery("SELECT title FROM ".__PREFIX__."articles WHERE id = '".$this->id."'"));
+		$this->get_title = mysqli_fetch_assoc($this->sql->sendQuery("SELECT title FROM ".__PREFIX__."articles WHERE id = '".$this->id."'"));
 		
 		return ($this->get_title['title'] ? $this->get_title['title'] : '404 - Not Found');
 	}
@@ -215,20 +215,20 @@ class Core extends Security {
 		
 		$this->my_is_numeric($id); 
 		
-		if(mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE id = '".$this->id."'")) != 1)
+		if(mysqli_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE id = '".$this->id."'")) != 1)
 			die("<div id=\"error\"><h2>".$lang['article_not_exist']."</h2></div>");
 		
-		$this->post = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE id = '".$this->id."'"));
+		$this->post = mysqli_fetch_assoc($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE id = '".$this->id."'"));
 		
 		$num_read = $this->post['num_read'] + 1;
 		$this->num_read = intval($num_read);
 		$this->sql->sendQuery("UPDATE ".__PREFIX__."articles SET num_read = '".$this->num_read."' WHERE id = '".$this->id."'");
 		
 		//estraggo l'email dell'autore dell'articolo
-		$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".mysql_real_escape_string($this->post['author'])."'"));
+		$this->mail = mysqli_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".addslashes($this->post['author'])."'"));
 		
 		//estraggo il nome della categoria
-		$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".mysql_real_escape_string($this->post['cat_id'])));
+		$this->cat = mysqli_fetch_assoc($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".addslashes($this->post['cat_id'])));
 		
 		//BBcode
 		include_once("lib/admin.class.php");
@@ -281,7 +281,7 @@ class Core extends Security {
 				$commento = $this->VarProtect( $_POST['comment'] );
 				$name     = $this->VarProtect( $_POST['name']    );
 				
-				$this->log_ip = mysql_fetch_array($this->sql->sendQuery("SELECT ip_log_active FROM ".__PREFIX__."config"));
+				$this->log_ip = mysqli_fetch_assoc($this->sql->sendQuery("SELECT ip_log_active FROM ".__PREFIX__."config"));
 				
 				if($this->log_ip['ip_log_active'] == 0)
 					$ip = 'NULL';
@@ -296,10 +296,10 @@ class Core extends Security {
 		$this->comments = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."comments WHERE blog_id = '{$id}'");
 
 		//cascata di commenti per il post
-		if(mysql_num_rows($this->comments) < 0) {
+		if(mysqli_num_rows($this->comments) < 0) {
 			echo "\n<br /><br />\n<em>".$lang['no_comment']."</em><br />\n";
 		}else{
-			while($row = mysql_fetch_array($this->comments)) {
+			while($row = mysqli_fetch_assoc($this->comments)) {
 				echo "\n<br /><b>".$lang['name'].":</b>".$row['name']."<br />"
 					."\n<b> ".$lang['commit'].": </b>".$row['comment']."<br /><br />"; 
 			}
@@ -355,10 +355,10 @@ class Core extends Security {
 			
 			$this->query = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."categories");
 			
-			while($this->cat = mysql_fetch_array($this->query)) {
+			while($this->cat = mysqli_fetch_assoc($this->query)) {
 				$this->num_art_for_cat = NULL;
 				
-				$this->num_art_for_cat = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".(int) $this->cat['cat_id']."'"));
+				$this->num_art_for_cat = mysqli_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".(int) $this->cat['cat_id']."'"));
 				
 				print "\n<li>&raquo; <a href=\"index.php?mode=view_cat&cat_id=".$this->cat['cat_id']."\">".$this->cat['cat_name']."</a> (".$this->num_art_for_cat.")</li>";
 			}
@@ -373,7 +373,7 @@ class Core extends Security {
 			
 			$this->articles = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles ORDER BY num_read DESC LIMIT 6");
 			
-			while($this->article = mysql_fetch_array($this->articles, MYSQL_ASSOC)) {
+			while($this->article = mysqli_fetch_assoc($this->articles)) {
 				print "\n<li><font size=\"2\">".$this->article['post_date']." -> <a href=\"viewpost.php?id=".$this->article['id']."\">".$this->article['title']."</a></font></li>";
 			}
 		
@@ -386,7 +386,7 @@ class Core extends Security {
 	
 	public function show_footer() {
 	
-		$this->config  = mysql_fetch_array($this->sql->sendQuery("SELECT footer FROM ".__PREFIX__."config"));
+		$this->config  = mysqli_fetch_assoc($this->sql->sendQuery("SELECT footer FROM ".__PREFIX__."config"));
 		print "\n<!-- footer -->"
 			. "\n <div id=\"footer\">"
 			. "\n\t<p align=\"left\" style=\"float: left;\">".$this->config['footer']."</p>"			
@@ -424,7 +424,7 @@ class Core extends Security {
         $sql .= " ORDER BY id DESC";
         
         $query  = $this->sql->sendQuery($sql);
-        $quanti = mysql_num_rows($query);
+        $quanti = mysqli_num_rows($query);
         
         if ($quanti == 0) {
 			print "\n<p>".$lang['no_result']."!</p><br /><b><a href=\"search.php\">".$lang['back']."</a></b>";
@@ -433,7 +433,7 @@ class Core extends Security {
         	
             for($i = 0; $i < $quanti; $i++) {
             
-                $this->result = mysql_fetch_array($query);
+                $this->result = mysqli_fetch_assoc($query);
                 
                 $this->id     = intval($this->result['id']);
                 $this->title  = htmlspecialchars($this->result['title']);
@@ -451,9 +451,9 @@ class Core extends Security {
 		
 		$this->my_is_numeric($this->cat_id);
 		
-		$this->config = mysql_fetch_array($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
+		$this->config = mysqli_fetch_assoc($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."config"));
 		
-		$total  = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".(int) $this->cat_id."' ORDER by id DESC"));
+		$total  = mysqli_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."articles WHERE cat_id = '".(int) $this->cat_id."' ORDER by id DESC"));
 		$pager 	= $this->Pagination($total, $this->config['limit'], $page);
 		$offset = $pager['offset'];
 		$limit 	= $pager['limit'];
@@ -467,9 +467,9 @@ class Core extends Security {
 	    if($total < 1)
 	    	print "\n<p align=\"center\"><b>".$lang['no_items']."</b></p>";
 	    	
-		while($this->articles = mysql_fetch_array($this->blog)) {
+		while($this->articles = mysqli_fetch_assoc($this->blog)) {
 		
-			$this->comments = mysql_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."comments WHERE blog_id = '".(int) $this->articles['id']."'"));
+			$this->comments = mysqli_num_rows($this->sql->sendQuery("SELECT * FROM ".__PREFIX__."comments WHERE blog_id = '".(int) $this->articles['id']."'"));
 			
 			$tmp = NULL;
 		
@@ -483,10 +483,10 @@ class Core extends Security {
 				$tmp .= $this->articles['post'][$i];
 			
 			//estraggo l'email dell'autore dell'articolo
-			$this->mail = mysql_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".mysql_real_escape_string($this->articles['author'])."'"));
+			$this->mail = mysqli_fetch_row($this->sql->sendQuery("SELECT email FROM ".__PREFIX__."users WHERE username = '".addslashes($this->articles['author'])."'"));
 			
 			//estraggo il nome della categoria
-			$this->cat = mysql_fetch_array($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".mysql_real_escape_string($this->articles['cat_id'])));
+			$this->cat = mysqli_fetch_assoc($this->sql->sendQuery("SELECT cat_name FROM ".__PREFIX__."categories WHERE cat_id = ".addslashes($this->articles['cat_id'])));
 
 			//BBcode
 			include_once("lib/admin.class.php");

@@ -34,7 +34,7 @@ class Login extends Security {
 		
 		$query = $this->sql->sendQuery("SELECT * FROM ".__PREFIX__."users WHERE username='".$this->username."'");
 		
-		while ($ris = mysql_fetch_array ($query)) {
+		while ($ris = mysqli_fetch_assoc ($query)) {
 		
 			if (strtolower($this->username) == strtolower($ris['username']) && $this->password == $ris['password'])
 				return TRUE;
@@ -50,7 +50,7 @@ class Login extends Security {
 		
 		$this->login = $this->sql->sendQuery ("SELECT * FROM ".__PREFIX__."users WHERE username = '".$this->username."' LIMIT 1");
 		
-		while ($this->user = mysql_fetch_array ($this->login)) {
+		while ($this->user = mysqli_fetch_assoc ($this->login)) {
 		
 			if (strtolower($this->username) == strtolower($this->user['username']) && $this->password == $this->user['password']) {			
 			

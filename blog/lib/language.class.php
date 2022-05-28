@@ -33,7 +33,7 @@ class Language {
 	
 	public function load_language() {
 	
-		$this->config =  mysql_fetch_array($this->sql->sendQuery("SELECT lang FROM ".__PREFIX__."config"));
+		$this->config =  mysqli_fetch_assoc($this->sql->sendQuery("SELECT lang FROM ".__PREFIX__."config"));
 		
 		if($this->check_exist_language($this->config['lang']) == TRUE)
 			return $this->config['lang'];

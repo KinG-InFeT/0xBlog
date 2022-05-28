@@ -17,24 +17,20 @@ class MySQL {
 	
 	public function __construct ($db_host, $db_user, $db_pass, $db_name) {
 	
-		if (!$this -> conn = @mysql_connect ($db_host, $db_user, $db_pass)) {
-			die (mysql_error());
-		}
-		
-		if (!@mysql_select_db ($db_name, $this -> conn)) {
-			die (mysql_error());
+		if (!$this -> conn = @mysqli_connect ($db_host, $db_user, $db_pass, $db_name)) {
+			die (mysqli_error());
 		}
 	}
 	
 	public function sendQuery ($query) {
-		if (!$this -> result = @mysql_query ($query, $this -> conn)) {
-			die ("SQL Error: ".mysql_error ());
+		if (!$this -> result = @mysqli_query ($this -> conn, $query)) {
+			die ("SQL Error: ");
 		}else {
 			return $this -> result;
 		}
 	}
 	
 	public function __destruct () {
-		@mysql_close ($this -> _conn);
+		@mysqli_close ($this -> conn);
 	}
 }
