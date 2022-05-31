@@ -33,7 +33,8 @@ $y = 30;
 $im = imagecreate ($x, $y);
 
 $bgcolor   = array (rand (0,255),rand (0,255),rand (0,255));
-$textcolor = array (~$bgcolor[0],~$bgcolor[1],~$bgcolor[2]);
+$textcolor   = array (rand (0,255),rand (0,255),rand (0,255));
+//$textcolor = array (~$bgcolor[0],~$bgcolor[1],~$bgcolor[2]);
 
 $bg = imagecolorallocate ($im, $bgcolor[0], $bgcolor[1], $bgcolor[2]);
 $tc = imagecolorallocate ($im, $textcolor[0], $textcolor[1], $textcolor[2]);
